@@ -1,3 +1,3 @@
 # Todo
 ## Db design
-![db schema](./public/db.pn
+![db schema](./public/db.png)
