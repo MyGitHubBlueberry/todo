@@ -1,11 +1,13 @@
 using Server.Data;
+using Server.Core.Interfaces;
+using Server.Services;
 
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 
 internal class Program
 {
@@ -21,6 +23,10 @@ internal class Program
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
                    .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
         });
+
+        builder.Services.AddScoped<ITaskService, TaskService>()
+                        .AddScoped<ICategoryService, CategoryService>()
+                        .AddScoped<IAuthService, AuthService>();
 
         var app = builder.Build();
 
