@@ -12,6 +12,7 @@ using System.IO;
 using Server.Core.Dtos.Category;
 using Server.Core.Models;
 using System.Linq;
+using System;
 
 public class TaskService(AppDbContext db) : ITaskService
 {
@@ -66,8 +67,70 @@ public class TaskService(AppDbContext db) : ITaskService
 
         if (task is null) return null;
 
+        return ToTaskResponseDto(task);
+    }
+
+    //page starts from 0
+    public async Task<IEnumerable<TaskResponseDto>>
+        GetTasksAsync(int userId, int page, int pageSize, int? categoryId = null, string? searchTerm = null)
+    {
+        var tasks = db.Tasks
+            .Include(t => t.Categories)
+            .Where(t => t.UserId == userId)
+            .Where(t => categoryId == null ? true : t.Categories.Any(c => c.Id == categoryId))
+            .Where(t => searchTerm == null ? true : (t.Title.Contains(searchTerm)
+                    || (t.Body == null ? false : t.Body.Contains(searchTerm))
+                    || t.Categories.Any(c => c.Name.Contains(searchTerm))));
+
+        var totalCount = await tasks.CountAsync();
+
+        page = Math.Clamp(
+            page,
+            0,
+            Math.Max(0, (int)Math.Floor(totalCount / (double)pageSize))
+        );
+
+        return tasks
+            .OrderBy(t => t.Id)
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .Select(task => ToTaskResponseDto(task));
+    }
+
+    public async Task<TaskResponseDto?> UpdateTaskAsync(int userId, TaskUpdateDto taskDto)
+    {
+        var task = await db.Tasks
+            .Include(t => t.Categories)
+            .FirstOrDefaultAsync(t => t.UserId == userId && t.Id == taskDto.id);
+
+        if (task is null) return null;
+        if ((await db.Tasks.Where(t => t.UserId == userId)
+                    .Where(t => t.Id != taskDto.id)
+                    .AnyAsync(t => t.Title == taskDto.title)))
+            throw new InvalidDataException("Failed to update task: This task title is already taken.");
+
+        task.Title = taskDto.title;
+        task.Body = taskDto.body;
+        task.Status = taskDto.status;
+        task.UpdatedAt = System.DateTime.UtcNow;
+        task.Categories.RemoveAll(c => !taskDto.categoryIds.Contains(c.Id));
+
+        await db.Categories
+            .Where(c => c.UserId == userId)
+            .Where(c => taskDto.categoryIds.Contains(c.Id))
+            .Where(c => !task.Categories.Contains(c))
+            .ForEachAsync(c => task.Categories.Add(c));
+
+
+        var response = ToTaskResponseDto(task);
+        await db.SaveChangesAsync();
+        return response;
+    }
+
+    private TaskResponseDto ToTaskResponseDto(Server.Core.Models.Task task) {
         var categories = new CategoryResponseDto[task.Categories.Count];
-        for (int i = 0; i < categories.Length; i++) {
+        for (int i = 0; i < categories.Length; i++)
+        {
             categories[i] = new CategoryResponseDto
                 (task.Categories[i].Id, task.Categories[i].Name);
         }
@@ -82,15 +145,5 @@ public class TaskService(AppDbContext db) : ITaskService
             task.IsEdited,
             categories
         );
-    }
-
-    public Task<(IEnumerable<TaskResponseDto> Tasks, int TotalCount)> GetTasksAsync(int userId, int page, int pageSize, int? categoryId = null, string? searchTerm = null)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public Task<TaskResponseDto?> UpdateTaskAsync(int userId, TaskUpdateDto taskDto)
-    {
-        throw new System.NotImplementedException();
     }
 }

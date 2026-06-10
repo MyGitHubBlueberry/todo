@@ -6,7 +6,7 @@ using Server.Core.Dtos.Task;
 
 public interface ITaskService
 {
-    Task<(IEnumerable<TaskResponseDto> Tasks, int TotalCount)> GetTasksAsync(
+    Task<IEnumerable<TaskResponseDto>> GetTasksAsync(
         int userId,
         int page,
         int pageSize,
