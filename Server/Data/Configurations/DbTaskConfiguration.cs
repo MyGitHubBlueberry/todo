@@ -46,5 +46,9 @@ public class DbTaskConfiguration : IEntityTypeConfiguration<Task>
                );
 
         builder.HasIndex(t => t.UserId);
+        builder.HasIndex(t => new { t.UserId, t.Title })
+            .IsUnique();
+        builder.HasIndex(t => new { t.Id, t.UserId })
+            .IsUnique();
     }
 }

@@ -21,5 +21,8 @@ public class DbCategoryConfiguration : IEntityTypeConfiguration<Category>
 
         builder.HasIndex(u => new { u.UserId, u.Name })
             .IsUnique();
+
+        builder.HasIndex(u => new { u.Id, u.UserId })
+            .IsUnique();
     }
 }
