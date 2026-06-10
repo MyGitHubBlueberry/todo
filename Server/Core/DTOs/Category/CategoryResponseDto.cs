@@ -1,3 +1,3 @@
 namespace Server.Core.Dtos.Category;
 
-public record CategoryResponceDto(int id, string category);
+public record CategoryResponseDto(int id, string category);

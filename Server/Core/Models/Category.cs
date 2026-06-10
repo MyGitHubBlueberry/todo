@@ -11,5 +11,5 @@ public class Category
     public int UserId { get; set; }
     public required User User { get; set; }
 
-    public ICollection<Task>? Tasks { get; set; }
+    public List<Task> Tasks { get; set; } = new();
 }
