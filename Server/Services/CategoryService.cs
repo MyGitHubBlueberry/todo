@@ -10,6 +10,7 @@ using Server.Core.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 public class CategoryService(AppDbContext db) : ICategoryService
 {
@@ -54,9 +55,14 @@ public class CategoryService(AppDbContext db) : ICategoryService
             .SingleOrDefaultAsync(c => c.Id == categoryId && c.UserId == userId);
 
         if (category is null)
-            throw new InvalidDataException("Failed to update category: doesn't exist.");
+            throw new InvalidOperationException("Failed to update category: doesn't exist.");
 
-        if (await db.Categories.AnyAsync(c => c.UserId == userId && c.Name == newName))
+        if (category.Name == newName)
+            return new CategoryResponseDto(category.Id, category.Name);
+
+        if (await db.Categories.AnyAsync(c => c.UserId == userId
+                    && c.Name == newName
+                    && c.Id != categoryId))
             throw new InvalidDataException("Failed to update category: category with this name already exists.");
 
         category.Name = newName;
