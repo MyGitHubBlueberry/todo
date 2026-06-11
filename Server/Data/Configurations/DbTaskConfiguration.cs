@@ -25,17 +25,9 @@ public class DbTaskConfiguration : IEntityTypeConfiguration<Task>
         builder.Property(t => t.CreatedAt)
             .IsRequired();
 
-        builder.Property(t => t.UpdatedAt)
-            .HasDefaultValue(null);
-
         builder.Property(t => t.IsEdited)
             .IsRequired()
             .HasDefaultValue(false);
-
-        builder.HasOne(t => t.User)
-            .WithMany()
-            .HasForeignKey(t => t.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(t => t.Categories)
                .WithMany(c => c.Tasks)
@@ -45,10 +37,7 @@ public class DbTaskConfiguration : IEntityTypeConfiguration<Task>
                    r => r.HasOne(typeof(Task)).WithMany().HasForeignKey("task_id")
                );
 
-        builder.HasIndex(t => t.UserId);
         builder.HasIndex(t => new { t.UserId, t.Title })
-            .IsUnique();
-        builder.HasIndex(t => new { t.Id, t.UserId })
             .IsUnique();
     }
 }

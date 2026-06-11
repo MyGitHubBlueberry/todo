@@ -15,14 +15,7 @@ public class DbCategoryConfiguration : IEntityTypeConfiguration<Category>
             .IsRequired()
             .HasMaxLength(25);
 
-        builder.HasOne(u => u.User)
-            .WithMany()
-            .HasForeignKey(u => u.UserId);
-
         builder.HasIndex(u => new { u.UserId, u.Name })
-            .IsUnique();
-
-        builder.HasIndex(u => new { u.Id, u.UserId })
             .IsUnique();
     }
 }
