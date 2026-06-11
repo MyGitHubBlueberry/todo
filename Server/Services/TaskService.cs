@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using Server.Core.Dtos.Category;
-using Server.Core.Models;
 using System.Linq;
 using System;
 
@@ -27,18 +26,17 @@ public class TaskService(AppDbContext db) : ITaskService
             UserId = userId,
         };
 
-        //transaction
         var categories = new CategoryResponseDto[taskDto.categoryIds.Length];
-        await Parallel.ForAsync(0, taskDto.categoryIds.Length, async (i, ct) =>
+        for (int i = 0; i < categories.Length; i++)
         {
             var id = taskDto.categoryIds[i];
-            Category? category = await db.Categories.FindAsync(new { id, userId });
-            if (category is null)
-                throw new InvalidDataException("One of the task categories doesn't exist.");
-            category.Tasks.Add(task);
+            var category = await db.Categories
+                .SingleOrDefaultAsync(c => c.Id == id && c.UserId == userId)
+                    ?? throw new InvalidDataException("Category doesn't exist or doesn't belong to the user.");
+
+            task.Categories.Add(category);
             categories[i] = new CategoryResponseDto(category.Id, category.Name);
-        });
-        // end transaction
+        }
 
         await db.Tasks.AddAsync(task);
         await db.SaveChangesAsync();
@@ -70,31 +68,30 @@ public class TaskService(AppDbContext db) : ITaskService
         return ToTaskResponseDto(task);
     }
 
-    //page starts from 0
-    public async Task<IEnumerable<TaskResponseDto>>
+    public async Task<(IEnumerable<TaskResponseDto> Tasks, int TotalCount)>
         GetTasksAsync(int userId, int page, int pageSize, int? categoryId = null, string? searchTerm = null)
     {
         var tasks = db.Tasks
             .Include(t => t.Categories)
             .Where(t => t.UserId == userId)
-            .Where(t => categoryId == null ? true : t.Categories.Any(c => c.Id == categoryId))
-            .Where(t => searchTerm == null ? true : (t.Title.Contains(searchTerm)
-                    || (t.Body == null ? false : t.Body.Contains(searchTerm))
-                    || t.Categories.Any(c => c.Name.Contains(searchTerm))));
+            .Where(t => categoryId == null || t.Categories.Any(c => c.Id == categoryId))
+            .Where(t => searchTerm == null || (t.Title.Contains(searchTerm)
+                     || (t.Body != null && t.Body.Contains(searchTerm))
+                     || t.Categories.Any(c => c.Name.Contains(searchTerm))));
 
         var totalCount = await tasks.CountAsync();
 
-        page = Math.Clamp(
-            page,
-            0,
-            Math.Max(0, (int)Math.Floor(totalCount / (double)pageSize))
-        );
+        page = Math.Clamp(page, 0, Math.Max(0, (int)Math.Floor(totalCount / (double)pageSize)));
 
-        return tasks
+        var dbTasks = await tasks
             .OrderBy(t => t.Id)
             .Skip(page * pageSize)
             .Take(pageSize)
-            .Select(task => ToTaskResponseDto(task));
+            .ToListAsync();
+
+        var dtos = dbTasks.Select(task => ToTaskResponseDto(task));
+
+        return (dtos, totalCount);
     }
 
     public async Task<TaskResponseDto?> UpdateTaskAsync(int userId, TaskUpdateDto taskDto)
@@ -113,21 +110,24 @@ public class TaskService(AppDbContext db) : ITaskService
         task.Body = taskDto.body;
         task.Status = taskDto.status;
         task.UpdatedAt = System.DateTime.UtcNow;
+        task.IsEdited = true;
+
         task.Categories.RemoveAll(c => !taskDto.categoryIds.Contains(c.Id));
 
-        await db.Categories
+        var categories = await db.Categories
             .Where(c => c.UserId == userId)
             .Where(c => taskDto.categoryIds.Contains(c.Id))
             .Where(c => !task.Categories.Contains(c))
-            .ForEachAsync(c => task.Categories.Add(c));
+            .ToListAsync();
 
+        categories.ForEach(c => task.Categories.Add(c));
 
-        var response = ToTaskResponseDto(task);
         await db.SaveChangesAsync();
-        return response;
+        return ToTaskResponseDto(task);
     }
 
-    private TaskResponseDto ToTaskResponseDto(Server.Core.Models.Task task) {
+    private TaskResponseDto ToTaskResponseDto(Server.Core.Models.Task task)
+    {
         var categories = new CategoryResponseDto[task.Categories.Count];
         for (int i = 0; i < categories.Length; i++)
         {
