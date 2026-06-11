@@ -1,6 +1,7 @@
 namespace Server.Api.Controllers;
 
 using Server.Core.Dtos.Task;
+using Server.Core.Extensions;
 using Server.Core.Interfaces;
 
 using System.IO;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
-using Server.Core.Extensions;
+using System;
 
 [Authorize]
 [ApiController]
@@ -30,7 +31,13 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
         }
         catch (InvalidDataException ex)
         {
-            logger.LogError(ex, "Error creating task with title '{Title}': {Message}.",
+            logger.LogWarning(ex, "Error creating task with title '{Title}': {Message}.",
+                    dto.title, ex.Message);
+            return Conflict(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            logger.LogWarning(ex, "Error creating task with title '{Title}': {Message}.",
                     dto.title, ex.Message);
             return BadRequest(new { message = ex.Message });
         }
@@ -46,7 +53,7 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
 
         return await service.DeleteTaskAsync(id, userId)
             ? NoContent()
-            : BadRequest(new
+            : NotFound(new
             {
                 message = "Failed to delete task: task doesn't exist."
             });
@@ -106,7 +113,22 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
         catch (InvalidDataException ex)
         {
             logger.LogWarning("Failed to update task: {Message}", ex.Message);
-            return BadRequest(new { message = ex.Message });
+            return Conflict(new { message = ex.Message });
         }
+    }
+
+    [HttpPatch("{id}/status")]
+    public async Task<ActionResult<TaskResponseDto>> UpdateStatus(int id, [FromBody] TaskStatusUpdateDto dto)
+    {
+        if (!User.TryGetUserId(out int userId))
+        {
+            return Unauthorized(new { message = "Invalid token payload." });
+        }
+
+        var task = await service.UpdateTaskStatusAsync(id, userId, dto.status);
+
+        return task is null
+            ? NotFound(new { message = "Task not found." })
+            : Ok(task);
     }
 }
