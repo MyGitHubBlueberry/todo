@@ -1,23 +1,26 @@
 namespace Server.Services;
 
+using Server.Core.Dtos.Auth;
 using Server.Core.Interfaces;
 using Server.Core.Models;
 using Server.Data;
 
-using BCrypt.Net;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using System;
-using Microsoft.IdentityModel.Tokens;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 
+using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
+using System.Security.Cryptography;
+
 public class AuthService(AppDbContext db, IConfiguration config) : IAuthService
 {
-    public async Task<string?> LoginAsync(string username, string password)
+    public async Task<TokensDto> LoginAsync(string username, string password)
     {
         var user = await db.Users.FirstOrDefaultAsync(u => u.Username == username)
             ?? throw new InvalidDataException("Invalid login: No user with this username exists.");
@@ -25,7 +28,30 @@ public class AuthService(AppDbContext db, IConfiguration config) : IAuthService
         if (!BCrypt.Verify(password, user.Password))
             throw new InvalidDataException("Invalid login: Password is invalid.");
 
-        return GenerateJwtToken(user);
+        var tokens = new TokensDto(GenerateJwtToken(user), GenerateRefreshToken());
+
+        user.RefreshToken = tokens.refreshToken;
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+        return tokens;
+    }
+
+    public async Task<TokensDto> RefreshTokenAsync(string expiredToken, string refreshToken)
+    {
+        var user = await db.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+
+        if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+        {
+            throw new InvalidDataException("Invalid client request: Refresh token is missing, invalid, or expired.");
+        }
+
+        var tokens = new TokensDto(GenerateJwtToken(user), GenerateRefreshToken());
+        user.RefreshToken = tokens.refreshToken;
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+        await db.SaveChangesAsync();
+
+        return tokens;
     }
 
     public async Task<User> RegisterAsync(string username, string password)
@@ -68,5 +94,12 @@ public class AuthService(AppDbContext db, IConfiguration config) : IAuthService
                     signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private string GenerateRefreshToken()
+    {
+        var token = new byte[64];
+        RandomNumberGenerator.Create().GetBytes(token);
+        return Convert.ToBase64String(token);
     }
 }

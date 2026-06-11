@@ -20,5 +20,8 @@ public class DbUserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasIndex(u => u.Username)
             .IsUnique();
+
+        builder.HasIndex(u => u.RefreshToken)
+            .IsUnique();
     }
 }
