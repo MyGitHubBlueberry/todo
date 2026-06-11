@@ -1,15 +1,15 @@
 namespace Server.Core.Interfaces;
 
-using Server.Core.Models;
+using Server.Core.Dtos.Category;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public interface ICategoryService
 {
-    Task<IEnumerable<Category>> GetCategoriesAsync(int userId);
-    Task<Category?> GetCategoryByIdAsync(int categoryId, int userId);
-    Task<Category> CreateCategoryAsync(Category category);
+    Task<IEnumerable<CategoryResponseDto>> GetCategoriesAsync(int userId);
+    Task<CategoryResponseDto?> GetCategoryByIdAsync(int categoryId, int userId);
+    Task<CategoryResponseDto> CreateCategoryAsync(int userId, string name);
     Task<bool> DeleteCategoryAsync(int categoryId, int userId);
-    Task<Category?> UpdateCategoryAsync(int categoryId, int userId, string newName);
+    Task<CategoryResponseDto> UpdateCategoryAsync(int categoryId, int userId, string newName);
 }
