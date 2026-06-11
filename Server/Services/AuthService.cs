@@ -20,12 +20,12 @@ using System.Security.Cryptography;
 
 public class AuthService(AppDbContext db, IConfiguration config) : IAuthService
 {
-    public async Task<TokensDto> LoginAsync(string username, string password)
+    public async Task<TokensDto> LoginAsync(LoginDto loginDto)
     {
-        var user = await db.Users.FirstOrDefaultAsync(u => u.Username == username)
+        var user = await db.Users.FirstOrDefaultAsync(u => u.Username == loginDto.login)
             ?? throw new InvalidDataException("Invalid login: No user with this username exists.");
 
-        if (!BCrypt.Verify(password, user.Password))
+        if (!BCrypt.Verify(loginDto.password, user.Password))
             throw new InvalidDataException("Invalid login: Password is invalid.");
 
         var tokens = new TokensDto(GenerateJwtToken(user), GenerateRefreshToken());
@@ -36,9 +36,9 @@ public class AuthService(AppDbContext db, IConfiguration config) : IAuthService
         return tokens;
     }
 
-    public async Task<TokensDto> RefreshTokenAsync(string expiredToken, string refreshToken)
+    public async Task<TokensDto> RefreshTokenAsync(TokensDto tokensDto)
     {
-        var user = await db.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+        var user = await db.Users.FirstOrDefaultAsync(u => u.RefreshToken == tokensDto.refreshToken);
 
         if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
         {
@@ -54,21 +54,29 @@ public class AuthService(AppDbContext db, IConfiguration config) : IAuthService
         return tokens;
     }
 
-    public async Task<User> RegisterAsync(string username, string password)
+    public async Task<TokensDto> RegisterAsync(RegistrationDto registrationDto)
     {
-        if (await db.Users.AnyAsync(u => u.Username == username))
+        if (await db.Users.AnyAsync(u => u.Username == registrationDto.login))
             throw new InvalidDataException("Registration failed: This username is already in use.");
 
-        var pwd = BCrypt.HashPassword(password);
+        var pwd = BCrypt.HashPassword(registrationDto.password);
         var user = new User
         {
-            Username = username,
+            Username = registrationDto.password,
             Password = pwd
         };
 
         await db.Users.AddAsync(user);
+
         await db.SaveChangesAsync();
-        return user;
+
+        var tokens = new TokensDto(GenerateJwtToken(user), GenerateRefreshToken());
+        user.RefreshToken = tokens.refreshToken;
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+        await db.SaveChangesAsync();
+
+        return tokens;
     }
 
     private string GenerateJwtToken(User user)
