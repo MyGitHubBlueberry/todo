@@ -21,17 +21,18 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
     public async Task<ActionResult<TaskResponseDto>> Create([FromBody] TaskCreateDto dto)
     {
         if (!User.TryGetUserId(out int userId))
-        {
             return Unauthorized(new { message = "Invalid token payload." });
-        }
 
         try
         {
-            return Ok(await service.CreateTaskAsync(userId, dto));
+            var task = await service.CreateTaskAsync(userId, dto);
+            logger.LogInformation("User with id {userId} created task '{Title}' successfuly.",
+                    userId, dto.title);
+            return Ok(task);
         }
         catch (InvalidDataException ex)
         {
-            logger.LogWarning(ex, "Error creating task with title '{Title}': {Message}.",
+            logger.LogWarning(ex, "Failed to create a task with title '{Title}': {Message}.",
                     dto.title, ex.Message);
             return Conflict(new { message = ex.Message });
         }
@@ -47,26 +48,31 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
     public async Task<ActionResult> Delete(int id)
     {
         if (!User.TryGetUserId(out int userId))
-        {
             return Unauthorized(new { message = "Invalid token payload." });
-        }
 
-        return await service.DeleteTaskAsync(id, userId)
-            ? NoContent()
-            : NotFound(new
+
+        var result = await service.DeleteTaskAsync(id, userId);
+
+        if (!result)
+        {
+            return NotFound(new
             {
                 message = "Failed to delete task: task doesn't exist."
             });
+        }
 
+        logger.LogInformation("User with id {userId} deleted task with id {taskId} successfuly.",
+                userId, id);
+
+        return NoContent();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<TaskResponseDto>> GetById(int id)
     {
         if (!User.TryGetUserId(out int userId))
-        {
             return Unauthorized(new { message = "Invalid token payload." });
-        }
+
         var task = await service.GetTaskByIdAsync(id, userId);
         return task is null
             ? NotFound(new { message = "Task not found." })
@@ -81,9 +87,8 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
             [FromQuery] string? searchTerm = null)
     {
         if (!User.TryGetUserId(out int userId))
-        {
             return Unauthorized(new { message = "Invalid token payload." });
-        }
+
         var (tasks, totalCount) = await service
             .GetTasksAsync(userId, page, pageSize, categoryId, searchTerm);
 
@@ -98,17 +103,19 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
     public async Task<ActionResult<TaskResponseDto>> Update([FromBody] TaskUpdateDto dto)
     {
         if (!User.TryGetUserId(out int userId))
-        {
             return Unauthorized(new { message = "Invalid token payload." });
-        }
 
         try
         {
             var task = await service.UpdateTaskAsync(userId, dto);
 
-            return task is null
-                ? NotFound(new { message = "Task not found." })
-                : Ok(task);
+            if (task is null)
+                return NotFound(new { message = "Task not found." });
+
+            logger.LogInformation("User with id {userId} updated task with id {taskId} successfuly.",
+                userId, dto.id);
+
+            return Ok(task);
         }
         catch (InvalidDataException ex)
         {
@@ -121,14 +128,17 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
     public async Task<ActionResult<TaskResponseDto>> UpdateStatus(int id, [FromBody] TaskStatusUpdateDto dto)
     {
         if (!User.TryGetUserId(out int userId))
-        {
             return Unauthorized(new { message = "Invalid token payload." });
-        }
 
         var task = await service.UpdateTaskStatusAsync(id, userId, dto.status);
 
-        return task is null
-            ? NotFound(new { message = "Task not found." })
-            : Ok(task);
+
+        if (task is null)
+            return NotFound(new { message = "Task not found." });
+
+        logger.LogInformation("User with id {userId} update task status with id {taskId} successfuly.",
+                userId, id);
+
+        return Ok(task);
     }
 }

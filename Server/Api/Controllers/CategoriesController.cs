@@ -21,13 +21,16 @@ public class CategoriesController(ILogger<CategoriesController> logger, ICategor
     public async Task<ActionResult<CategoryResponseDto>> Create([FromBody] CategoryCreateDto dto)
     {
         if (!User.TryGetUserId(out int userId))
-        {
             return Unauthorized(new { message = "Invalid token payload." });
-        }
 
         try
         {
-            return Ok(await service.CreateCategoryAsync(userId, dto.name));
+            var category = await service.CreateCategoryAsync(userId, dto.name);
+
+            logger.LogInformation("User {UserId} successfully created category '{CategoryName}' (Id: {CategoryId}).",
+                userId, category.name, category.id);
+
+            return Ok(category);
         }
         catch (InvalidDataException ex)
         {
@@ -41,9 +44,7 @@ public class CategoriesController(ILogger<CategoriesController> logger, ICategor
     public async Task<ActionResult<CategoryResponseDto>> GetById(int id)
     {
         if (!User.TryGetUserId(out int userId))
-        {
             return Unauthorized(new { message = "Invalid token payload." });
-        }
 
         var category = await service.GetCategoryByIdAsync(id, userId);
         if (category is null)
@@ -55,9 +56,7 @@ public class CategoriesController(ILogger<CategoriesController> logger, ICategor
     public async Task<ActionResult<IEnumerable<CategoryResponseDto>>> Get()
     {
         if (!User.TryGetUserId(out int userId))
-        {
             return Unauthorized(new { message = "Invalid token payload." });
-        }
 
         return Ok(await service.GetCategoriesAsync(userId));
     }
@@ -66,13 +65,14 @@ public class CategoriesController(ILogger<CategoriesController> logger, ICategor
     public async Task<ActionResult<CategoryResponseDto>> Update(int id, [FromBody] CategoryUpdateDto dto)
     {
         if (!User.TryGetUserId(out int userId))
-        {
             return Unauthorized(new { message = "Invalid token payload." });
-        }
 
         try
         {
-            return Ok(await service.UpdateCategoryAsync(id, userId, dto.newName));
+            var category = await service.UpdateCategoryAsync(id, userId, dto.newName);
+            logger.LogInformation("User {UserId} successfully updated category '{CategoryName}' (Id: {CategoryId}).",
+                userId, category.name, category.id);
+            return Ok(category);
         }
         catch (InvalidDataException ex)
         {
@@ -92,15 +92,18 @@ public class CategoriesController(ILogger<CategoriesController> logger, ICategor
     public async Task<ActionResult> Delete(int id)
     {
         if (!User.TryGetUserId(out int userId))
-        {
             return Unauthorized(new { message = "Invalid token payload." });
-        }
+
         var result = await service.DeleteCategoryAsync(id, userId);
-        if (!result) {
-            logger.LogWarning("Failed to delete category with id '{Id}'",
-                    id);
+        if (!result)
+        {
+            logger.LogWarning("Failed to delete category with id '{Id}'", id);
             return NotFound(new { message = "Category doesn't exist" });
         }
+
+        logger.LogInformation("User {UserId} successfully deleted category {Id}.",
+                userId, id);
+
         return NoContent();
     }
 }
