@@ -99,21 +99,21 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
         });
     }
 
-    [HttpPut]
-    public async Task<ActionResult<TaskResponseDto>> Update([FromBody] TaskUpdateDto dto)
+    [HttpPut("{id}")]
+    public async Task<ActionResult<TaskResponseDto>> Update(int id, [FromBody] TaskUpdateDto dto)
     {
         if (!User.TryGetUserId(out int userId))
             return Unauthorized(new { message = "Invalid token payload." });
 
         try
         {
-            var task = await service.UpdateTaskAsync(userId, dto);
+            var task = await service.UpdateTaskAsync(id, userId, dto);
 
             if (task is null)
                 return NotFound(new { message = "Task not found." });
 
             logger.LogInformation("User with id {userId} updated task with id {taskId} successfuly.",
-                userId, dto.id);
+                userId, id);
 
             return Ok(task);
         }

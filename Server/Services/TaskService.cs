@@ -92,15 +92,15 @@ public class TaskService(AppDbContext db) : ITaskService
         return (dbTasks.Select(ToTaskResponseDto), totalCount);
     }
 
-    public async Task<TaskResponseDto?> UpdateTaskAsync(int userId, TaskUpdateDto taskDto)
+    public async Task<TaskResponseDto?> UpdateTaskAsync(int taskId, int userId, TaskUpdateDto taskDto)
     {
         var task = await db.Tasks
             .Include(t => t.Categories)
-            .FirstOrDefaultAsync(t => t.UserId == userId && t.Id == taskDto.id);
+            .FirstOrDefaultAsync(t => t.UserId == userId && t.Id == taskId);
 
         if (task is null) return null;
         if ((await db.Tasks.Where(t => t.UserId == userId)
-                    .Where(t => t.Id != taskDto.id)
+                    .Where(t => t.Id != taskId)
                     .AnyAsync(t => t.Title == taskDto.title)))
             throw new InvalidDataException("Failed to update task: This task title is already taken.");
 
