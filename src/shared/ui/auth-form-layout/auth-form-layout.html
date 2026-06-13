@@ -1,0 +1,19 @@
+<form [formGroup]="formGroup()" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="login">Login:</label>
+    <input type="text" id="login" formControlName="login" class="form-input" />
+    <ng-content select="[login-errors]" />
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password:</label>
+    <input type="password" id="password" formControlName="password" class="form-input" />
+    <ng-content select="[password-errors]" />
+  </div>
+
+  <ng-content />
+
+  <button type="submit" [disabled]="formGroup().invalid">
+    {{ submitButtonText() }}
+  </button>
+</form>

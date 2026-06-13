@@ -1,0 +1,19 @@
+<shared-auth-form-layout [formGroup]="loginForm" submitButtonText="Login" (formSubmit)="login()">
+  @if (loginForm.get('login')?.invalid
+  && (loginForm.get('login')?.dirty || loginForm.get('login')?.touched)) {
+  <div login-errors class="error-container">
+    @if (loginForm.get('login')?.hasError('required')) {
+    <span class="error-text">Username is required.</span>
+    }
+  </div>
+  }
+
+  @if (loginForm.get('password')?.invalid
+  && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)) {
+  <div password-errors class="error-container">
+    @if (loginForm.get('password')?.hasError('required')) {
+    <span class="error-text">Password is required.</span>
+    }
+  </div>
+  }
+</shared-auth-form-layout>

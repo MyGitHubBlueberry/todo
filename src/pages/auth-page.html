@@ -1,1 +1,24 @@
-<h1>Welcome!</h1>
+<main class="auth-page-container">
+  <div class="auth-card">
+    <header class="auth-tabs">
+      <button type="button"
+        [class.active]="currentForm() === 'login'"
+        (click)="showLoginForm()">
+        Login
+      </button>
+      <button type="button"
+        [class.active]="currentForm() === 'register'"
+        (click)="showRegisterForm()">
+        Register
+      </button>
+    </header>
+
+    <section class="auth-body">
+      @if (currentForm() === 'login') {
+      <feature-login-by-username />
+      } @else {
+      <feature-register-by-username />
+      }
+    </section>
+  </div>
+</main>

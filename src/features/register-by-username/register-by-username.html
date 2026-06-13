@@ -1,0 +1,45 @@
+<shared-auth-form-layout [formGroup]="registerForm" submitButtonText="Register" (formSubmit)="register()">
+  @if (registerForm.get('login')?.invalid
+    && (registerForm.get('login')?.dirty || registerForm.get('login')?.touched)) {
+    <div login-errors class="error-container">
+      @if (registerForm.get('login')?.hasError('required')) {
+        <span class="error-text">Username is required.</span>
+      }
+      @if (registerForm.get('login')?.hasError('minLength')) {
+        <span class="error-text">Username should be at least 4 characters long.</span>
+      }
+      @if (registerForm.get('login')?.hasError('maxLength')) {
+        <span class="error-text">Username length should be less than 25 characters.</span>
+      }
+    </div>
+  }
+
+  @if (registerForm.get('password')?.invalid
+    && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)) {
+    <div password-errors class="error-container">
+      @if (registerForm.get('password')?.hasError('required')) {
+        <span class="error-text">Password is required.</span>
+      }
+      @if (registerForm.get('password')?.hasError('minLength')) {
+        <span class="error-text">Password should be at least 8 characters long.</span>
+      }
+    </div>
+  }
+
+  <div class="form-group">
+    <label for="confirmPassword">Confirm Password:</label>
+    <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-input" />
+
+    @if (registerForm.get('confirmPassword')?.invalid
+      && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)) {
+      <div class="error-container">
+      @if (registerForm.get('confirmPassword')?.hasError('required')) {
+        <span class="error-text">Password confirmation is requiered.</span>
+      }
+      @if (registerForm.get('confirmPassword')?.hasError('passwordMismatch')) {
+        <span class="error-text">Passwords do not match.</span>
+      }
+      </div>
+    }
+  </div>
+</shared-auth-form-layout>
