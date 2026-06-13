@@ -5,10 +5,10 @@
       @if (registerForm.get('login')?.hasError('required')) {
         <span class="error-text">Username is required.</span>
       }
-      @if (registerForm.get('login')?.hasError('minLength')) {
+      @if (registerForm.get('login')?.hasError('minlength')) {
         <span class="error-text">Username should be at least 4 characters long.</span>
       }
-      @if (registerForm.get('login')?.hasError('maxLength')) {
+      @if (registerForm.get('login')?.hasError('maxlength')) {
         <span class="error-text">Username length should be less than 25 characters.</span>
       }
     </div>
@@ -20,7 +20,7 @@
       @if (registerForm.get('password')?.hasError('required')) {
         <span class="error-text">Password is required.</span>
       }
-      @if (registerForm.get('password')?.hasError('minLength')) {
+      @if (registerForm.get('password')?.hasError('minlength')) {
         <span class="error-text">Password should be at least 8 characters long.</span>
       }
     </div>
@@ -29,17 +29,16 @@
   <div class="form-group">
     <label for="confirmPassword">Confirm Password:</label>
     <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-input" />
-
-    @if (registerForm.get('confirmPassword')?.invalid
-      && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)) {
-      <div class="error-container">
-      @if (registerForm.get('confirmPassword')?.hasError('required')) {
-        <span class="error-text">Password confirmation is requiered.</span>
+    <div class="error-container">
+      @if (registerForm.get('confirmPassword')?.invalid
+        && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)) {
+        @if (registerForm.get('confirmPassword')?.hasError('required')) {
+          <span class="error-text">Password confirmation is requiered.</span>
+        }
       }
-      @if (registerForm.get('confirmPassword')?.hasError('passwordMismatch')) {
+      @if (registerForm?.hasError('passwordMismatch')) {
         <span class="error-text">Passwords do not match.</span>
       }
-      </div>
-    }
+    </div>
   </div>
 </shared-auth-form-layout>
