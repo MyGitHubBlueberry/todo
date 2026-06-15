@@ -41,6 +41,27 @@ public class AuthServiceTests
     }
 
     [Fact]
+    public async Task RegisterAsync_Cant_Register_2_Identical_Users()
+    {
+        var (connection, options, config) = await DbTestHelper.SetupTestDbAsync();
+
+        var dto = new RegistrationDto("testuser_1", "MySecretPassword123");
+
+        using (var context = new AppDbContext(options))
+        {
+            var authService = new AuthService(context, config);
+            await authService.RegisterAsync(dto);
+        }
+
+        using (var context = new AppDbContext(options))
+        {
+            var authService = new AuthService(context, config);
+            await Assert.ThrowsAsync<InvalidDataException>(async () =>
+                    await authService.RegisterAsync(dto));
+        }
+    }
+
+    [Fact]
     public async Task LoginAsync_Successfully_Logs_In_And_Generates_Tokens()
     {
         var (connection, options, config) = await DbTestHelper.SetupTestDbAsync();
@@ -76,6 +97,39 @@ public class AuthServiceTests
 
             Assert.NotEqual(dto.password, user.Password);
             Assert.True(BCrypt.Net.BCrypt.Verify(dto.password, user.Password));
+        }
+    }
+
+    [Fact]
+    public async Task LoginAsync_Cant_Login_With_Wrong_Password()
+    {
+        var (connection, options, config) = await DbTestHelper.SetupTestDbAsync();
+
+        var dto = new LoginDto("testuser_1", "MySecretPassword123");
+
+        using (var context = new AppDbContext(options))
+        {
+            await context.Users.AddAsync(new User
+            {
+                Username = dto.login,
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.password),
+            });
+            await context.SaveChangesAsync();
+        }
+
+        using (var context = new AppDbContext(options))
+        {
+            var authService = new AuthService(context, config);
+            var tokens = await authService.LoginAsync(dto);
+        }
+
+        using (var context = new AppDbContext(options))
+        {
+            dto = new LoginDto(dto.login, dto.password + "123");
+            var authService = new AuthService(context, config);
+
+            await Assert.ThrowsAsync<InvalidDataException>(async () =>
+                    await authService.LoginAsync(dto));
         }
     }
 }
