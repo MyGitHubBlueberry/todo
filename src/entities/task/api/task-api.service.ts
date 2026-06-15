@@ -24,13 +24,13 @@ export class TaskApiService {
     return this.http.get<TaskResponseDto[]>(`${this.baseUrl}/get`);
   }
 
-  public put(id: number, dto: TaskUpdateDto): Observable<TaskResponseDto> {
+  public put(id: number, dto: TaskUpdateDto): Observable<TaskResponseDto>
+  {
     return this.http.put<TaskResponseDto>(`${this.baseUrl}/put/${id}`, dto);
   }
 
-  public putStatus(id: number, dto: TaskStatusUpdateDto): Observable<TaskResponseDto> {
+  public putStatus(id: number, dto: TaskStatusUpdateDto): Observable<TaskResponseDto>
+  {
     return this.http.put<TaskResponseDto>(`${this.baseUrl}/put/status/${id}`, dto);
   }
-
-
 }
