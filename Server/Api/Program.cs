@@ -38,12 +38,23 @@ internal class Program
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey
-                        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+                        (Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]
+                            ?? throw new InvalidOperationException("JWT Secret Key is completely missing from appsettings.json!"))),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAngularDevClient", policy =>
+            {
+                policy.WithOrigins("http://localhost:4200")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
 
         var app = builder.Build();
 
@@ -52,6 +63,7 @@ internal class Program
             app.MapOpenApi();
         }
 
+        app.UseCors("AllowAngularDevClient");
         app.UseHttpsRedirection();
         app.UseAuthentication();
         app.UseAuthorization();
