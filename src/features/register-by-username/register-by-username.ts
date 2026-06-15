@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthFormLayoutComponent } from '@shared/ui/auth-form-layout/auth-form-layout';
+import { SessionService } from '@entities/session/model/session.service';
+import { Router } from '@angular/router';
+import { RegistrationDto } from '@entities/session/api/types';
 import { passwordMatchValidator } from './password-match.validator';
 
 @Component({
@@ -9,6 +12,12 @@ import { passwordMatchValidator } from './password-match.validator';
   imports: [ReactiveFormsModule, AuthFormLayoutComponent],
 })
 export class RegisterByUsername {
+  private readonly sessionService = inject(SessionService);
+  private readonly router = inject(Router);
+
+  private readonly isLoading = signal(false);
+  protected readonly backendError = signal<string | null>(null);
+
   protected registerForm = new FormGroup({
     login: new FormControl('', {
       nonNullable: true,
@@ -19,6 +28,25 @@ export class RegisterByUsername {
   }, { validators: [passwordMatchValidator] });
 
   protected register(): void {
-    alert('Attempted registration with: ' + JSON.stringify(this.registerForm.value));
+    if (this.registerForm.invalid) return;
+
+    this.isLoading.set(true);
+    this.backendError.set(null);
+
+    const payload: RegistrationDto = {
+      login: this.registerForm.value.login!,
+      password: this.registerForm.value.password!,
+    };
+
+    this.sessionService.register(payload).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.router.navigate(['/'])
+      },
+      error: err => {
+        this.isLoading.set(false);
+        this.backendError.set(err.error?.message || 'An unexpected error occurred.');
+      },
+    });
   }
 }

@@ -8,9 +8,9 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
   imports: [ReactiveFormsModule],
 })
 export class AuthFormLayoutComponent {
-  // Pass the form group down from the feature
   readonly formGroup = input.required<FormGroup>();
   readonly submitButtonText = input<string>('Submit');
+  readonly backendError = input<string | null>(null);
 
   readonly formSubmit = output<void>();
 

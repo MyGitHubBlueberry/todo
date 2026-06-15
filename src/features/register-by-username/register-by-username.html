@@ -1,4 +1,8 @@
-<shared-auth-form-layout [formGroup]="registerForm" submitButtonText="Register" (formSubmit)="register()">
+<shared-auth-form-layout
+  [formGroup]="registerForm"
+  [backendError]="backendError()"
+  submitButtonText="Register"
+  (formSubmit)="register()">
   @if (registerForm.get('login')?.invalid
     && (registerForm.get('login')?.dirty || registerForm.get('login')?.touched)) {
     <div login-errors class="error-container">
@@ -36,7 +40,7 @@
           <span class="error-text">Password confirmation is requiered.</span>
         }
       }
-      @if (registerForm?.hasError('passwordMismatch')) {
+      @if (registerForm.hasError('passwordMismatch')) {
         <span class="error-text">Passwords do not match.</span>
       }
     </div>

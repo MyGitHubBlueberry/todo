@@ -16,4 +16,12 @@
   <button type="submit" [disabled]="formGroup().invalid">
     {{ submitButtonText() }}
   </button>
+
+  @if (backendError()) {
+    <div class="error-container">
+      <span class="error-text">
+        ⚠️ {{ backendError() }}
+      </span>
+    </div>
+  }
 </form>
