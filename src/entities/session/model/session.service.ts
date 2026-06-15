@@ -17,7 +17,7 @@ export class SessionService {
   }
 
   public register(dto: RegistrationDto): Observable<TokensDto> {
-    return this.api.login(dto).pipe(
+    return this.api.register(dto).pipe(
       tap(tokens => this.saveTokens(tokens)));
   }
 
