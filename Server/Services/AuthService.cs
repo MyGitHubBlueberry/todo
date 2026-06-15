@@ -38,11 +38,14 @@ public class AuthService(AppDbContext db, IConfiguration config) : IAuthService
 
     public async Task<TokensDto> RefreshTokenAsync(TokensDto tokensDto)
     {
-        var user = await db.Users.FirstOrDefaultAsync(u => u.RefreshToken == tokensDto.refreshToken);
+        var username = GetPrincipalFromExpiredToken(tokensDto.accessToken).Identity?.Name;
+        var user = await db.Users
+            .FirstOrDefaultAsync(u => u.Username == username
+                    && u.RefreshToken == tokensDto.refreshToken);
 
         if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
         {
-            throw new InvalidDataException("Invalid client request: Refresh token is missing, invalid, or expired.");
+            throw new InvalidDataException("Invalid client request: Refresh token is missing or expired.");
         }
 
         var tokens = new TokensDto(GenerateJwtToken(user), GenerateRefreshToken());
@@ -62,7 +65,7 @@ public class AuthService(AppDbContext db, IConfiguration config) : IAuthService
         var pwd = BCrypt.HashPassword(registrationDto.password);
         var user = new User
         {
-            Username = registrationDto.password,
+            Username = registrationDto.login,
             Password = pwd
         };
 
@@ -109,5 +112,29 @@ public class AuthService(AppDbContext db, IConfiguration config) : IAuthService
         var token = new byte[64];
         RandomNumberGenerator.Create().GetBytes(token);
         return Convert.ToBase64String(token);
+    }
+
+    private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!)),
+            ValidateAudience = false,
+            ValidateIssuer = false,
+            ValidateLifetime = false
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+
+        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            throw new SecurityTokenException("Invalid token");
+        }
+
+        return principal;
     }
 }

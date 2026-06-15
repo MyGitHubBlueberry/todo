@@ -3,10 +3,12 @@ namespace Server.Api.Controllers;
 using Server.Core.Dtos.Auth;
 using Server.Core.Interfaces;
 
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -57,7 +59,7 @@ public class AuthController(ILogger<AuthController> logger, IAuthService service
             logger.LogInformation("Tokens were refreshed succesfuly");
             return Ok(tokens);
         }
-        catch (InvalidDataException ex)
+        catch (Exception ex) when (ex is InvalidDataException || ex is SecurityTokenException)
         {
             logger.LogWarning("Failed to regenerate tokens: {Message}", ex.Message);
             return Unauthorized(new { message = ex.Message });
