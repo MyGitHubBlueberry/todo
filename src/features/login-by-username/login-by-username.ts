@@ -38,7 +38,7 @@ export class LoginByUsername {
     this.sessionService.login(payload).subscribe({
       next: _ => {
         this.isLoading.set(false);
-        this.router.navigate(['/']);
+        this.router.navigate(['/auth']);
       },
       error: err => {
         this.isLoading.set(false);
