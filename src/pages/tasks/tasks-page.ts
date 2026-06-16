@@ -1,50 +1,69 @@
 import { Component, computed, inject, OnInit, signal } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { CategoryResponseDto } from "@entities/category/api/types";
 import { TaskApiService } from "@entities/task/api/task-api.service";
 import { TaskResponseDto, TaskGetQueryDto, TaskStatus } from "@entities/task/api/types";
+import { TaskCard } from "@entities/task/ui/task-card";
+import { TaskFilterBar } from "@features/task-filters/task-filter-bar";
+import { TaskPagination } from "@features/task-pagination/task-pagination";
 
 @Component({
   selector: 'page-tasks',
   templateUrl: './tasks-page.html',
   styleUrl: './tasks-page.css',
+  imports: [TaskFilterBar, TaskPagination, TaskCard],
 })
 export class TaskPage {
   private readonly api = inject(TaskApiService);
+
   protected readonly tasks = signal<TaskResponseDto[]>([]);
   private readonly tasksMap =
     computed(() => new Map(this.tasks().map(t => [t.id, t] as const)));
   protected readonly categories = signal<CategoryResponseDto[]>([]);
+
   protected readonly searchTerm = signal<string | null>(null);
-  protected readonly currentPage = signal<number>(0);
-  protected readonly pageSize = signal<number>(10);
   protected readonly selectedCategoryIds = signal<number[]>([]);
   protected readonly selectedStatus = signal<TaskStatus | null>(null);
+
+  protected readonly pageSize = signal<number>(10);
+  protected readonly currentPage = signal<number>(0);
   protected readonly totalCount = signal<number>(0);
 
   protected readonly isLoading = signal<boolean>(false);
 
   ngOnInit() {
     this.fetchTasks();
+    //todo: this.fetchCategories();
   }
 
   protected toggleTask(task: TaskResponseDto) {
-    task.status = task.status == 'Done' ? 'Pending' : 'Done';
+    const newStatus: TaskStatus = task.status == 'Done' ? 'Pending' : 'Done';
+
+    this.tasks.update(currentTasks =>
+      currentTasks.map(t => t.id === task.id ? { ...t, status: newStatus } : t)
+    );
+
     this.api.putStatus(task.id, {
       status: task.status,
+    }).subscribe({
+      error: () => {
+        this.tasks.update(currentTasks =>
+          currentTasks.map(t => t.id === task.id ? { ...t, status: task.status } : t)
+        );
+      },
     });
-    //todo: manage subscribtion?
   }
 
   protected deleteTask(id: number) {
     if (!this.tasksMap().has(id)) return;
 
+    const previousTasks = this.tasks();
+    this.tasks.set(previousTasks.filter(t => t.id !== id));
+
     this.api.delete(id).subscribe({
-      next: () => {
-        if (this.tasksMap().has(id)) {
-          this.tasks.update(t => t.filter(t => t.id != id));
-        }
-      },
-      // error (todo)
+      error: () => {
+        this.tasks.set(previousTasks);
+      }
     })
   }
 
@@ -78,7 +97,7 @@ export class TaskPage {
         this.tasks.set(data.tasks);
         this.totalCount.set(data.totalCount);
       },
-      error: (err) => {
+      error: () => {
         this.isLoading.set(false);
         //todo: show some error?
       }
