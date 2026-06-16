@@ -10,7 +10,8 @@ public interface ITaskService
         int userId,
         int page,
         int pageSize,
-        int? categoryId = null,
+        int[] categoryIds,
+        Core.Status? selectedStatus = null,
         string? searchTerm = null);
 
     Task<TaskResponseDto> CreateTaskAsync(int userId, TaskCreateDto taskDto);

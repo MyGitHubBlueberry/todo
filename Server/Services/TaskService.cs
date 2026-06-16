@@ -58,17 +58,28 @@ public class TaskService(AppDbContext db) : ITaskService
         return ToTaskResponseDto(task);
     }
 
-    public async Task<(IEnumerable<TaskResponseDto> Tasks, int TotalCount)> GetTasksAsync(
-        int userId, int page, int pageSize, int? categoryId = null, string? searchTerm = null)
+    public async Task<(IEnumerable<TaskResponseDto> Tasks, int TotalCount)>
+        GetTasksAsync(
+            int userId,
+            int page,
+            int pageSize,
+            int[] categoryIds,
+            Core.Status? selectedStatus = null,
+            string? searchTerm = null)
     {
         var query = db.Tasks
             .Include(t => t.Categories)
             .Where(t => t.UserId == userId)
             .AsQueryable();
 
-        if (categoryId.HasValue)
+        if (selectedStatus.HasValue) {
+            query = query.Where(t => t.Status == selectedStatus);
+        }
+
+        if (categoryIds.Length != 0)
         {
-            query = query.Where(t => t.Categories.Any(c => c.Id == categoryId));
+            var categorySet = categoryIds.ToHashSet();
+            query = query.Where(t => t.Categories.Any(c => categorySet.Contains(c.Id)));
         }
 
         if (!string.IsNullOrWhiteSpace(searchTerm))

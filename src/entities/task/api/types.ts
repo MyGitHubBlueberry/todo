@@ -16,17 +16,15 @@ export interface TaskStatusUpdateDto {
   status: TaskStatus;
 }
 
-export enum TaskStatus {
-  Done,
-  Pending
-}
-
 export interface TaskGetQueryDto {
     page: number,
     pageSize: number,
-    categoryId: number | undefined,
-    searchTerm: string | undefined,
+    categoryIds: number[],
+    selectedStatus: TaskStatus | null,
+    searchTerm: string | null,
 }
+
+export type TaskStatus = 'Done' | 'Pending';
 
 export interface TaskResponseDto {
   id: number,
