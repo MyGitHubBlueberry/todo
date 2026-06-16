@@ -16,8 +16,6 @@ export class TaskPageComponent {
   private readonly api = inject(TaskApiService);
 
   protected readonly tasks = signal<TaskResponseDto[]>([]);
-  private readonly tasksMap =
-    computed(() => new Map(this.tasks().map(t => [t.id, t] as const)));
   protected readonly categories = signal<CategoryResponseDto[]>([]);
 
   protected readonly searchTerm = signal<string | null>(null);
@@ -43,7 +41,7 @@ export class TaskPageComponent {
     );
 
     this.api.putStatus(task.id, {
-      status: task.status,
+      status: newStatus,
     }).subscribe({
       error: () => {
         this.tasks.update(currentTasks =>
@@ -54,8 +52,6 @@ export class TaskPageComponent {
   }
 
   protected deleteTask(id: number) {
-    if (!this.tasksMap().has(id)) return;
-
     const previousTasks = this.tasks();
     this.tasks.set(previousTasks.filter(t => t.id !== id));
 

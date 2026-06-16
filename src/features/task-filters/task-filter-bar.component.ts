@@ -18,8 +18,8 @@ import { TaskStatus } from '@entities/task/api/types';
 
       <select class="search-filters" [(ngModel)]="selectedStatus">
         <option [ngValue]="null" class="search-filter">All</option>
-        <option [ngValue]="Done" class="search-filter">Done</option>
-        <option [ngValue]="Pending" class="search-filter">Pending</option>
+        <option value="Done" class="search-filter">Done</option>
+        <option value="Pending" class="search-filter">Pending</option>
       </select>
 
       <input type="text" placeholder="Search tasks..." #searchInput
