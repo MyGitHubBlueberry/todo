@@ -19,7 +19,7 @@ export interface TaskStatusUpdateDto {
 export interface TaskGetQueryDto {
     page: number,
     pageSize: number,
-    categoryIds: number[],
+    categoryIds: number[] | null,
     selectedStatus: TaskStatus | null,
     searchTerm: string | null,
 }

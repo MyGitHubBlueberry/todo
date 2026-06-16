@@ -63,7 +63,7 @@ public class TaskService(AppDbContext db) : ITaskService
             int userId,
             int page,
             int pageSize,
-            int[] categoryIds,
+            int[]? categoryIds,
             Core.Status? selectedStatus = null,
             string? searchTerm = null)
     {
@@ -76,7 +76,7 @@ public class TaskService(AppDbContext db) : ITaskService
             query = query.Where(t => t.Status == selectedStatus);
         }
 
-        if (categoryIds.Length != 0)
+        if (categoryIds != null && categoryIds.Length != 0)
         {
             var categorySet = categoryIds.ToHashSet();
             query = query.Where(t => t.Categories.Any(c => categorySet.Contains(c.Id)));

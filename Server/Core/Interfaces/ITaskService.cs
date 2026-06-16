@@ -10,7 +10,7 @@ public interface ITaskService
         int userId,
         int page,
         int pageSize,
-        int[] categoryIds,
+        int[]? categoryIds,
         Core.Status? selectedStatus = null,
         string? searchTerm = null);
 

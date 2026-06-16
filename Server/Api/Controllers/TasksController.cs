@@ -83,7 +83,7 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
     public async Task<ActionResult> GetTasks(
             [FromQuery] int page,
             [FromQuery] int pageSize,
-            [FromQuery] int[] categoryIds,
+            [FromQuery] int[]? categoryIds = null,
             [FromQuery] Core.Status? selectedStatus = null,
             [FromQuery] string? searchTerm = null)
     {

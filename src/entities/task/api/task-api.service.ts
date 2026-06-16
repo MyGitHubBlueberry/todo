@@ -9,15 +9,15 @@ export class TaskApiService {
   private readonly baseUrl = 'http://localhost:5000/api/tasks';
 
   public create(dto: TaskCreateDto): Observable<TaskResponseDto> {
-    return this.http.post<TaskResponseDto>(`${this.baseUrl}/create`, dto);
+    return this.http.post<TaskResponseDto>(this.baseUrl, dto);
   }
 
   public delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/delete/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
   public getById(id: number): Observable<TaskResponseDto> {
-    return this.http.get<TaskResponseDto>(`${this.baseUrl}/get/${id}`);
+    return this.http.get<TaskResponseDto>(`${this.baseUrl}/${id}`);
   }
 
   public get(queryDto?: TaskGetQueryDto): Observable<TaskPaginatedResponseDto> {
@@ -25,18 +25,26 @@ export class TaskApiService {
 
     if (queryDto) {
       Object.entries(queryDto).forEach(([key, value]) => {
-        queryParams = queryParams.append(key, value);
+        if (value !== null && value !== undefined) {
+          if (Array.isArray(value)) {
+            value.forEach(item => {
+              queryParams = queryParams.append(key, item.toString());
+            });
+          } else {
+            queryParams = queryParams.append(key, value.toString());
+          }
+        }
       });
     }
 
-    return this.http.get<TaskPaginatedResponseDto>(`${this.baseUrl}/get`, { params: queryParams });
+    return this.http.get<TaskPaginatedResponseDto>(`${this.baseUrl}`, { params: queryParams });
   }
 
   public put(id: number, dto: TaskUpdateDto): Observable<TaskResponseDto> {
-    return this.http.put<TaskResponseDto>(`${this.baseUrl}/put/${id}`, dto);
+    return this.http.put<TaskResponseDto>(`${this.baseUrl}/${id}`, dto);
   }
 
   public putStatus(id: number, dto: TaskStatusUpdateDto): Observable<TaskResponseDto> {
-    return this.http.put<TaskResponseDto>(`${this.baseUrl}/put/status/${id}`, dto);
+    return this.http.put<TaskResponseDto>(`${this.baseUrl}/status/${id}`, dto);
   }
 }

@@ -24,7 +24,7 @@ export class TaskPageComponent {
   protected readonly categories = signal<CategoryResponseDto[]>([]);
 
   protected readonly searchTerm = signal<string | null>(null);
-  protected readonly selectedCategoryIds = signal<number[]>([]);
+  protected readonly selectedCategoryIds = signal<number[] | null>(null);
   protected readonly selectedStatus = signal<TaskStatus | null>(null);
 
   protected readonly pageSize = signal<number>(10);
