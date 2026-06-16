@@ -2,7 +2,7 @@ import { Component, input, output } from '@angular/core';
 import { TaskResponseDto } from '@entities/task/api/types';
 
 @Component({
-  selector: 'task-card',
+  selector: 'app-task-card',
   template: `
     <li class="task-card">
       <label>
@@ -20,7 +20,7 @@ import { TaskResponseDto } from '@entities/task/api/types';
     </li>
   `
 })
-export class TaskCard {
+export class TaskCardComponent {
   public task = input.required<TaskResponseDto>();
   public onToggle = output<TaskResponseDto>();
   public onDelete = output<number>();

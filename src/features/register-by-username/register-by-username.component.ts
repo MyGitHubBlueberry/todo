@@ -1,17 +1,17 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { AuthFormLayoutComponent } from '@shared/ui/auth-form-layout/auth-form-layout';
 import { SessionService } from '@entities/session/model/session.service';
 import { Router } from '@angular/router';
 import { RegistrationDto } from '@entities/session/api/types';
 import { passwordMatchValidator } from './password-match.validator';
+import { AuthFormLayoutComponent } from '@shared/ui/auth-form-layout/auth-form-layout.component';
 
 @Component({
-  selector: 'feature-register-by-username',
+  selector: 'app-register-by-username',
   templateUrl: './register-by-username.html',
   imports: [ReactiveFormsModule, AuthFormLayoutComponent],
 })
-export class RegisterByUsername {
+export class RegisterByUsernameComponent {
   private readonly sessionService = inject(SessionService);
   private readonly router = inject(Router);
 

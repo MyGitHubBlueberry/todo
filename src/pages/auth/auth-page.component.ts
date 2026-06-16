@@ -1,12 +1,12 @@
 import { Component, signal } from "@angular/core";
-import { LoginByUsername } from "@features/login-by-username/login-by-username";
-import { RegisterByUsername } from "@features/register-by-username/register-by-username";
+import { LoginByUsernameComponent } from "@features/login-by-username/login-by-username.component";
+import { RegisterByUsernameComponent } from "@features/register-by-username/register-by-username.component";
 
 @Component({
-  selector: 'page-auth',
+  selector: 'app-auth-page',
   templateUrl: './auth-page.html',
   styleUrl: './auth-page.css',
-  imports: [LoginByUsername, RegisterByUsername],
+  imports: [LoginByUsernameComponent, RegisterByUsernameComponent],
 })
 export class AuthPage {
   protected currentForm = signal<'login' | 'register'>('login');

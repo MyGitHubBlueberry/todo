@@ -2,7 +2,7 @@
   <header>
     <h2>My Tasks</h2>
 
-    <feature-task-filter-bar
+    <app-task-filter-bar
       [categories]="categories()"
       [(selectedCategoryIds)]="selectedCategoryIds"
       [(selectedStatus)]="selectedStatus"
@@ -16,7 +16,7 @@
 
   <ul class="task-list">
     @for (task of tasks(); track task.id) {
-      <task-card
+      <app-task-card
         [task]="task"
         (onToggle)="toggleTask($event)"
         (onDelete)="deleteTask($event)"
@@ -28,7 +28,7 @@
     }
   </ul>
 
-  <feature-task-pagination
+  <app-task-pagination
     [currentPage]="currentPage()"
     [pageSize]="pageSize()"
     [tasksCount]="tasks().length"

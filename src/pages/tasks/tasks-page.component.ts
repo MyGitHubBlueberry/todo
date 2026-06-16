@@ -1,19 +1,18 @@
 import { Component, computed, inject, OnInit, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import { CategoryResponseDto } from "@entities/category/api/types";
 import { TaskApiService } from "@entities/task/api/task-api.service";
 import { TaskResponseDto, TaskGetQueryDto, TaskStatus } from "@entities/task/api/types";
-import { TaskCard } from "@entities/task/ui/task-card";
-import { TaskFilterBar } from "@features/task-filters/task-filter-bar";
-import { TaskPagination } from "@features/task-pagination/task-pagination";
+import { TaskCardComponent } from "@entities/task/ui/task-card";
+import { TaskFilterBarComponent } from "@features/task-filters/task-filter-bar.component";
+import { TaskPaginationComponent } from "@features/task-pagination/task-pagination.component";
 
 @Component({
-  selector: 'page-tasks',
+  selector: 'app-tasks-page',
   templateUrl: './tasks-page.html',
   styleUrl: './tasks-page.css',
-  imports: [TaskFilterBar, TaskPagination, TaskCard],
+  imports: [TaskFilterBarComponent, TaskPaginationComponent, TaskCardComponent],
 })
-export class TaskPage {
+export class TaskPageComponent {
   private readonly api = inject(TaskApiService);
 
   protected readonly tasks = signal<TaskResponseDto[]>([]);

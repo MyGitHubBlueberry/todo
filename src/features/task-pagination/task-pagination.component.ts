@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 
 @Component({
-  selector: 'feature-task-pagination',
+  selector: 'app-task-pagination',
   template: `
     <footer class="pagination">
       <button [disabled]="currentPage() === 0 || isLoading()" (click)="onPrevious.emit()">
@@ -16,7 +16,7 @@ import { Component, input, output } from '@angular/core';
     </footer>
   `
 })
-export class TaskPagination {
+export class TaskPaginationComponent {
   public currentPage = input.required<number>();
   public pageSize = input.required<number>();
   public tasksCount = input.required<number>();

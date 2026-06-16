@@ -2,7 +2,7 @@ import { Component, input, output } from '@angular/core';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'shared-auth-form-layout',
+  selector: 'app-auth-form-layout',
   templateUrl: './auth-form-layout.html',
   styleUrl: './auth-form-layout.css',
   imports: [ReactiveFormsModule],

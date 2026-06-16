@@ -3,14 +3,14 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 import { Router } from '@angular/router';
 import { LoginDto } from '@entities/session/api/types';
 import { SessionService } from '@entities/session/model/session.service';
-import { AuthFormLayoutComponent } from '@shared/ui/auth-form-layout/auth-form-layout';
+import { AuthFormLayoutComponent } from '@shared/ui/auth-form-layout/auth-form-layout.component';
 
 @Component({
-  selector: 'feature-login-by-username',
+  selector: 'app-login-by-username',
   templateUrl: './login-by-username.html',
   imports: [ReactiveFormsModule, AuthFormLayoutComponent],
 })
-export class LoginByUsername {
+export class LoginByUsernameComponent {
   private readonly router = inject(Router);
   private readonly sessionService = inject(SessionService);
   private readonly isLoading = signal(false);

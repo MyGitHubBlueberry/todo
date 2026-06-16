@@ -1,4 +1,4 @@
-<shared-auth-form-layout [formGroup]="loginForm" submitButtonText="Login" [backendError]="backendError()" (formSubmit)="login()">
+<app-auth-form-layout [formGroup]="loginForm" submitButtonText="Login" [backendError]="backendError()" (formSubmit)="login()">
   @if (loginForm.get('login')?.invalid
   && (loginForm.get('login')?.dirty || loginForm.get('login')?.touched)) {
   <div login-errors class="error-container">
@@ -16,4 +16,4 @@
     }
   </div>
   }
-</shared-auth-form-layout>
+</app-auth-form-layout>

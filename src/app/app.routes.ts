@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { AuthPage } from '@pages/auth-page';
-import { authGuard } from './providers/auth.interceptor';
+import { authGuard } from './providers/auth.provider';
+import { AuthPage } from '@pages/auth/auth-page.component';
 
 export const routes: Routes = [
   {

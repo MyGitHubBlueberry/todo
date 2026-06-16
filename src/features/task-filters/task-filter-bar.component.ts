@@ -4,7 +4,7 @@ import { CategoryResponseDto } from '@entities/category/api/types';
 import { TaskStatus } from '@entities/task/api/types';
 
 @Component({
-  selector: 'feature-task-filter-bar',
+  selector: 'app-task-filter-bar',
   imports: [FormsModule],
   template: `
     <div class="search-controls">
@@ -29,7 +29,7 @@ import { TaskStatus } from '@entities/task/api/types';
     </div>
     `
 })
-export class TaskFilterBar {
+export class TaskFilterBarComponent {
   public categories = input.required<CategoryResponseDto[]>();
 
   public selectedCategoryIds = model<number[]>([]);
