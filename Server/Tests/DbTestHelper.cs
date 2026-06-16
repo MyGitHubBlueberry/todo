@@ -3,6 +3,7 @@ using Server.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Server.Core.Models;
 
 namespace Server.Tests;
 
@@ -35,5 +36,23 @@ public static class DbTestHelper
             .Build();
 
         return (connection, options, config);
+    }
+
+    public static async Task<User> AddUserAsync(DbContextOptions<AppDbContext> options, string? nameAndPassword = null)
+    {
+        User user = new User
+        {
+            Username = nameAndPassword == null ? "test" : nameAndPassword,
+            Password = nameAndPassword == null ? "test" : nameAndPassword,
+        };
+
+        using (var context = new AppDbContext(options))
+        {
+            await context.Users.AddAsync(user);
+
+            await context.SaveChangesAsync();
+        }
+
+        return user;
     }
 }
