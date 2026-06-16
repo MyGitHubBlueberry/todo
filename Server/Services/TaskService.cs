@@ -63,7 +63,7 @@ public class TaskService(AppDbContext db) : ITaskService
             int userId,
             int page,
             int pageSize,
-            int[]? categoryIds,
+            int[]? categoryIds = null,
             Core.Status? selectedStatus = null,
             string? searchTerm = null)
     {

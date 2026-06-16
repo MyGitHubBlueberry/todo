@@ -21,7 +21,8 @@ public class TaskServiceTests
         using (var context = new AppDbContext(options))
         {
             var service = new TaskService(context);
-            var (tasks, count) = await service.GetTasksAsync(user.Id, 0, 10, []);
+            var (tasks, count) = await service.GetTasksAsync(user.Id, 0, 10);
+
             Assert.Empty(tasks);
             Assert.Equal(0, count);
         }
@@ -48,7 +49,7 @@ public class TaskServiceTests
         using (var context = new AppDbContext(options))
         {
             var service = new TaskService(context);
-            var (tasks, count) = await service.GetTasksAsync(user.Id, 0, 10, []);
+            var (tasks, count) = await service.GetTasksAsync(user.Id, 0, 10);
             Assert.Single(tasks);
             Assert.Equal(1, count);
         }
