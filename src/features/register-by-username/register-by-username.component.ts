@@ -41,7 +41,7 @@ export class RegisterByUsernameComponent {
     this.sessionService.register(payload).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigate(['/auth'])
+        this.router.navigate(['/'])
       },
       error: err => {
         this.isLoading.set(false);

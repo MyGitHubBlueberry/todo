@@ -23,10 +23,10 @@ public class AuthService(AppDbContext db, IConfiguration config) : IAuthService
     public async Task<TokensDto> LoginAsync(LoginDto loginDto)
     {
         var user = await db.Users.FirstOrDefaultAsync(u => u.Username == loginDto.login)
-            ?? throw new InvalidDataException("Invalid login: No user with this username exists.");
+            ?? throw new InvalidDataException("Failed to login: No user with this username exists.");
 
         if (!BCrypt.Verify(loginDto.password, user.Password))
-            throw new InvalidDataException("Invalid login: Password is invalid.");
+            throw new InvalidDataException("Failed to login: Password is invalid.");
 
         var tokens = new TokensDto(GenerateJwtToken(user), GenerateRefreshToken());
 
