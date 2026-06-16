@@ -8,7 +8,7 @@ import { RegisterByUsernameComponent } from "@features/register-by-username/regi
   styleUrl: './auth-page.css',
   imports: [LoginByUsernameComponent, RegisterByUsernameComponent],
 })
-export class AuthPage {
+export class AuthPageComponent {
   protected currentForm = signal<'login' | 'register'>('login');
 
   protected showLoginForm() {

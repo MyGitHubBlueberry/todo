@@ -1,16 +1,17 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './providers/auth.provider';
-import { AuthPage } from '@pages/auth/auth-page.component';
+import { AuthPageComponent } from '@pages/auth/auth-page.component';
 
 export const routes: Routes = [
   {
     path: 'auth',
-    component: AuthPage,
+    component: AuthPageComponent,
     title: 'Authentication Page'
   },
-  {  //todo
+  {
     path: 'tasks',
-    // loadComponent: () => import('@pages/tasks-page').then(m => m.TasksPage),
+    title: 'Your tasks',
+    loadComponent: () => import('@pages/tasks/tasks-page.component').then(c => c.TaskPageComponent),
     canActivate: [authGuard]
   },
   {
