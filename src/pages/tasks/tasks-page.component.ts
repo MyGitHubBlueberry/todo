@@ -1,5 +1,8 @@
 import { Component, computed, inject, OnInit, signal } from "@angular/core";
+import { Router } from "@angular/router";
+import { routes } from "@app/app.routes";
 import { CategoryResponseDto } from "@entities/category/api/types";
+import { SessionService } from "@entities/session/model/session.service";
 import { TaskApiService } from "@entities/task/api/task-api.service";
 import { TaskResponseDto, TaskGetQueryDto, TaskStatus } from "@entities/task/api/types";
 import { TaskCardComponent } from "@entities/task/ui/task-card";
@@ -14,6 +17,8 @@ import { TaskPaginationComponent } from "@features/task-pagination/task-paginati
 })
 export class TaskPageComponent {
   private readonly api = inject(TaskApiService);
+  private readonly temp_sessionApi = inject(SessionService);
+  private readonly temp_router= inject(Router);
 
   protected readonly tasks = signal<TaskResponseDto[]>([]);
   protected readonly categories = signal<CategoryResponseDto[]>([]);
@@ -97,5 +102,10 @@ export class TaskPageComponent {
         //todo: show some error?
       }
     });
+  }
+
+  protected logout() {
+    this.temp_sessionApi.logout();
+    this.temp_router.navigate(['/auth']);
   }
 }

@@ -19,11 +19,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      const isAuthRequest = req.url.includes('/auth/login')
-                         || req.url.includes('/auth/register')
-                         || req.url.includes('/auth/refresh');
+      // const isAuthRequest = req.url.includes('/auth/login')
+      //                    || req.url.includes('/auth/register')
+      //                    || req.url.includes('/auth/refresh');
 
-      if (error.status === 401 && !isAuthRequest) {
+      if (error.status === 401 && !req.url.includes('/refresh')) {
         return sessionService.refresh().pipe(
           switchMap((newTokens) => {
             const retryReq = req.clone({
