@@ -1,0 +1,57 @@
+<main class="tasks-container">
+  <header>
+    <h2>My Tasks</h2>
+
+    <div class="search-controls">
+      <select multiple class="search-categories" placeholder>
+      <option class="search-category" selected>Category</option>
+        @for (category of categories(); track category.id) {
+          <option class="search-category">{{ category.name }}</option>
+        }
+      </select>
+      <select class="search-filters">
+        <option class="search-filter" selected>All</option>
+        <option class="search-filter">Completed</option>
+        <option class="search-filter">Pending</option>
+      </select>
+      <input type="text" placeholder="Search tasks..." #searchInput
+        (keyup.enter)="searchTerm.set(searchInput.value); fetchTasks()" />
+      <button (click)="searchTerm.set(searchInput.value); fetchTasks()">
+        Search
+      </button>
+    </div>
+  </header>
+
+  @if (isLoading()) {
+    <p class="loading">Loading your tasks...</p>
+  }
+
+  <ul class="task-list">
+    @for (task of tasks(); track task.id) {
+      <li class="task-card">
+        <label>
+          <input type="checkbox" [checked]="task.isCompleted" (change)="toggleTask(task)" />
+          <span [class.completed]="task.isCompleted">{{ task.title }}</span>
+        </label>
+
+        <button class="delete-btn" (click)="deleteTask(task.id)">Delete</button>
+      </li>
+    } @empty {
+      @if (!isLoading()) {
+        <p class="empty-state">No tasks found. Try adjusting your search or add a new one!</p>
+      }
+    }
+  </ul>
+
+  <footer class="pagination">
+    <button [disabled]="currentPage() === 0 || isLoading()" (click)="previousPage()">
+      Previous
+    </button>
+
+    <span>Page {{ currentPage() + 1 }}</span>
+
+    <button [disabled]="tasks().length < pageSize() || isLoading()" (click)="nextPage()">
+      Next
+    </button>
+  </footer>
+</main>
