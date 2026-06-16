@@ -21,6 +21,13 @@ export enum TaskStatus {
   Pending
 }
 
+export interface TaskGetQueryDto {
+    page: number,
+    pageSize: number,
+    categoryId: number | undefined,
+    searchTerm: string | undefined,
+}
+
 export interface TaskResponseDto {
   id: number,
   title: string,

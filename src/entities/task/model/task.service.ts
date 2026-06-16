@@ -52,7 +52,6 @@ export class TaskService {
   }
 
   public get(): Observable<TaskResponseDto[]> {
-
     if (this.taskArr().length > 0) {
       return of(this.taskArr()!);
     }
