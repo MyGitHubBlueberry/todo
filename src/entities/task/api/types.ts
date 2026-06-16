@@ -24,6 +24,11 @@ export interface TaskGetQueryDto {
     searchTerm: string | null,
 }
 
+export interface TaskPaginatedResponseDto {
+  tasks: TaskResponseDto[];
+  totalCount: number;
+}
+
 export type TaskStatus = 'Done' | 'Pending';
 
 export interface TaskResponseDto {

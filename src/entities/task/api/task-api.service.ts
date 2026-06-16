@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { TaskCreateDto, TaskGetQueryDto, TaskResponseDto, TaskStatusUpdateDto, TaskUpdateDto } from "./types";
+import { TaskCreateDto, TaskGetQueryDto, TaskPaginatedResponseDto, TaskResponseDto, TaskStatusUpdateDto, TaskUpdateDto } from "./types";
 
 @Injectable({ providedIn: 'root' })
 export class TaskApiService {
@@ -20,7 +20,7 @@ export class TaskApiService {
     return this.http.get<TaskResponseDto>(`${this.baseUrl}/get/${id}`);
   }
 
-  public get(queryDto?: TaskGetQueryDto): Observable<TaskResponseDto[]> {
+  public get(queryDto?: TaskGetQueryDto): Observable<TaskPaginatedResponseDto> {
     let queryParams = new HttpParams();
 
     if (queryDto) {
@@ -29,7 +29,7 @@ export class TaskApiService {
       });
     }
 
-    return this.http.get<TaskResponseDto[]>(`${this.baseUrl}/get`, { params: queryParams });
+    return this.http.get<TaskPaginatedResponseDto>(`${this.baseUrl}/get`, { params: queryParams });
   }
 
   public put(id: number, dto: TaskUpdateDto): Observable<TaskResponseDto> {
