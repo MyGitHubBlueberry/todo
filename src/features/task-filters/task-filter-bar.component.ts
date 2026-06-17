@@ -2,19 +2,17 @@ import { Component, input, model, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CategoryResponseDto } from '@entities/category/api/types';
 import { TaskStatus } from '@entities/task/api/types';
+import { TaskCategoriesComponent } from '@features/task-categories/task-categories.component';
 
 @Component({
   selector: 'app-task-filter-bar',
-  imports: [FormsModule],
+  imports: [FormsModule, TaskCategoriesComponent],
   template: `
     <div class="search-controls">
-      <select multiple class="search-categories" [(ngModel)]="selectedCategoryIds">
-        @for (category of categories(); track category.id) {
-          <option [ngValue]="category.id" class="search-category">
-            {{ category.name }}
-          </option>
-        }
-      </select>
+      <app-task-categories
+        [categories]="categories()"
+        [(selectedCategoryIds)]="selectedCategoryIds"
+      />
 
       <select class="search-filters" [(ngModel)]="selectedStatus">
         <option [ngValue]="null" class="search-filter">All</option>
