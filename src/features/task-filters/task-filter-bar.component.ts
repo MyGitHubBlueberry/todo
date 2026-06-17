@@ -30,7 +30,7 @@ import { TaskCategoriesComponent } from '@features/task-categories/task-categori
 export class TaskFilterBarComponent {
   public categories = input.required<CategoryResponseDto[]>();
 
-  public selectedCategoryIds = model<number[]>([]);
+  public selectedCategoryIds = model<number[] | null>(null);
   public selectedStatus = model<TaskStatus | null>(null);
 
   public onSearch = output<string>();

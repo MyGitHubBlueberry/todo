@@ -4,8 +4,9 @@ import { routes } from "@app/app.routes";
 import { CategoryResponseDto } from "@entities/category/api/types";
 import { SessionService } from "@entities/session/model/session.service";
 import { TaskApiService } from "@entities/task/api/task-api.service";
-import { TaskResponseDto, TaskGetQueryDto, TaskStatus } from "@entities/task/api/types";
+import { TaskResponseDto, TaskGetQueryDto, TaskStatus, TaskUpdateDto } from "@entities/task/api/types";
 import { TaskCardComponent } from "@entities/task/ui/task-card";
+import { TaskEditComponent } from "@features/task-edit/task-edit.component";
 import { TaskFilterBarComponent } from "@features/task-filters/task-filter-bar.component";
 import { TaskPaginationComponent } from "@features/task-pagination/task-pagination.component";
 
@@ -13,15 +14,16 @@ import { TaskPaginationComponent } from "@features/task-pagination/task-paginati
   selector: 'app-tasks-page',
   templateUrl: './tasks-page.html',
   styleUrl: './tasks-page.css',
-  imports: [TaskFilterBarComponent, TaskPaginationComponent, TaskCardComponent],
+  imports: [TaskFilterBarComponent, TaskPaginationComponent, TaskCardComponent, TaskEditComponent],
 })
 export class TaskPageComponent {
   private readonly api = inject(TaskApiService);
   private readonly temp_sessionApi = inject(SessionService);
-  private readonly temp_router= inject(Router);
+  private readonly temp_router = inject(Router);
 
   protected readonly tasks = signal<TaskResponseDto[]>([]);
   protected readonly categories = signal<CategoryResponseDto[]>([]);
+  protected readonly taskToEdit = signal<TaskResponseDto | null>(null);
 
   protected readonly searchTerm = signal<string | null>(null);
   protected readonly selectedCategoryIds = signal<number[] | null>(null);
@@ -56,6 +58,32 @@ export class TaskPageComponent {
     });
   }
 
+  protected openTaskEditMenu(task: TaskResponseDto) {
+    this.taskToEdit.set(task);
+  }
+
+  protected closeTaskEditMenu() {
+    this.taskToEdit.set(null);
+  }
+
+  protected updateTask(id: number, dto: TaskUpdateDto) {
+    const previousTasks = this.tasks();
+
+    this.tasks.update(currentTasks =>
+      currentTasks.map(t => t.id === id ? { ...t, ...dto } : t)
+    );
+
+    this.closeTaskEditMenu();
+
+    this.api.put(id, dto).subscribe({
+      error: (err) => {
+        //todo: show it as popup message
+        console.error('Failed to update task', err);
+        this.tasks.set(previousTasks);
+      }
+    });
+  }
+
   protected deleteTask(id: number) {
     const previousTasks = this.tasks();
     this.tasks.set(previousTasks.filter(t => t.id !== id));
@@ -67,7 +95,6 @@ export class TaskPageComponent {
     })
   }
 
-  //todo: updateTask
   //todo: addTask
 
   protected nextPage() {

@@ -19,7 +19,7 @@
       <app-task-card
         [task]="task"
         (onToggle)="toggleTask($event)"
-        (onDelete)="deleteTask($event)"
+        (onEdit)="openTaskEditMenu($event)"
       />
     } @empty {
       @if (!isLoading()) {
@@ -36,5 +36,18 @@
     (onNext)="nextPage()"
     (onPrevious)="previousPage()"
   />
+
+  @if (taskToEdit(); as task) {
+    <div class="modal-overlay" (click)="closeTaskEditMenu()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <app-task-edit
+          [task]="task"
+          [categories]="categories()"
+          (onClose)="closeTaskEditMenu()"
+          (onSave)="updateTask(task.id, $event)"
+        />
+      </div>
+    </div>
+  }
   <button (click)="logout()">logout</button>
 </main>

@@ -16,12 +16,12 @@ import { TaskResponseDto } from '@entities/task/api/types';
         </span>
       </label>
 
-      <button class="delete-btn" (click)="onDelete.emit(task().id)">Delete</button>
+      <button (click)="onEdit.emit(task())">Edit</button>
     </li>
   `
 })
 export class TaskCardComponent {
   public task = input.required<TaskResponseDto>();
   public onToggle = output<TaskResponseDto>();
-  public onDelete = output<number>();
+  public onEdit = output<TaskResponseDto>();
 }
