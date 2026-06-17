@@ -1,0 +1,12 @@
+<div class="modal-overlay" (click)="onClose.emit()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-top">
+      <h2 class="modal-title">{{ title() }}</h2>
+      <button (click)="onClose.emit()">x</button>
+    </div>
+
+    <ng-content />
+
+    <button (click)="onSave.emit()">Save</button>
+  </div>
+</div>
