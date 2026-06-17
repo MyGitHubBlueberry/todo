@@ -17,6 +17,7 @@ export class TaskFormComponent implements OnInit {
   public readonly onClose = output<void>();
   public readonly onCreate = output<TaskCreateDto>();
   public readonly onUpdate = output<TaskUpdateDto>();
+  public readonly onDelete = output<void>();
 
   protected formData!: TaskUpdateDto;
   protected isEditMode = false;

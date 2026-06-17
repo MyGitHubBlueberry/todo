@@ -8,12 +8,13 @@ import { TaskCardComponent } from "@entities/task/ui/task-card";
 import { TaskFilterBarComponent } from "@features/task-filters/task-filter-bar.component";
 import { TaskFormComponent } from "@features/task-form/task-form.component";
 import { TaskPaginationComponent } from "@features/task-pagination/task-pagination.component";
+import { ModalLayoutComponent } from "@shared/ui/window-layout/modal-layout.component";
 
 @Component({
   selector: 'app-tasks-page',
   templateUrl: './tasks-page.html',
   styleUrl: './tasks-page.css',
-  imports: [TaskFilterBarComponent, TaskPaginationComponent, TaskCardComponent, TaskFormComponent],
+  imports: [TaskFilterBarComponent, TaskPaginationComponent, TaskCardComponent, TaskFormComponent, ModalLayoutComponent],
 })
 export class TaskPageComponent implements OnInit {
   private readonly api = inject(TaskApiService);
@@ -23,6 +24,7 @@ export class TaskPageComponent implements OnInit {
   protected readonly tasks = signal<TaskResponseDto[]>([]);
   protected readonly categories = signal<CategoryResponseDto[]>([]);
   protected readonly taskToEdit = signal<TaskResponseDto | null>(null);
+  protected readonly taskToDelete = signal<TaskResponseDto | null>(null);
   protected readonly isCreateMenuOpen = signal<boolean>(false);
 
   protected readonly searchTerm = signal<string | null>(null);
@@ -71,6 +73,7 @@ export class TaskPageComponent implements OnInit {
   protected closeMenus() {
     this.taskToEdit.set(null);
     this.isCreateMenuOpen.set(false);
+    this.taskToDelete.set(null);
   }
 
   protected createTask(dto: TaskCreateDto) {
@@ -104,9 +107,16 @@ export class TaskPageComponent implements OnInit {
     });
   }
 
+  protected openTaskDeletionConfirmation(task: TaskResponseDto) {
+    this.closeMenus();
+    this.taskToDelete.set(task);
+  }
+
   protected deleteTask(id: number) {
     const previousTasks = this.tasks();
     this.tasks.set(previousTasks.filter(t => t.id !== id));
+
+    this.closeMenus();
 
     this.api.delete(id).subscribe({
       error: () => {

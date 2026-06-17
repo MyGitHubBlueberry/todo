@@ -35,4 +35,13 @@
     </label>
 
   </form>
+
+  @if (isEditMode) {
+    <button
+      type="button"
+      (click)="onDelete.emit()"
+    >
+      Delete Task
+    </button>
+  }
 </app-modal-layout>

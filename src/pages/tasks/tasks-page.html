@@ -53,7 +53,22 @@
       [categories]="categories()"
       (onClose)="closeMenus()"
       (onUpdate)="updateTask(task.id, $event)"
+      (onDelete)="openTaskDeletionConfirmation(task)"
     />
+  }
+
+  @if (taskToDelete(); as task) {
+    <app-modal-layout
+      title="Delete Task"
+      button="Confirm"
+      (onClose)="closeMenus()"
+      (onSave)="deleteTask(task.id)"
+    >
+      <div class="delete-warning">
+        <p>Are you sure you want to permanently delete <strong>{{ task.title }}</strong>?</p>
+        <p>This action cannot be undone.</p>
+      </div>
+    </app-modal-layout>
   }
   <button (click)="logout()">logout</button>
 </main>
