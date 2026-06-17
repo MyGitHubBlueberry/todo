@@ -1,0 +1,38 @@
+<app-modal-layout
+  [title]="isEditMode ? 'Edit Task' : 'Create New Task'"
+  [button]="isEditMode ? 'Save Changes' : 'Create Task'"
+  [isButtonDisabled]="taskForm.invalid ?? false"
+  (onClose)="onClose.emit()"
+  (onSave)="submitForm()"
+>
+  <form #taskForm="ngForm" class="task-form-layout">
+    <label for="task-title">
+      Title
+      <input
+        id="task-title"
+        name="title"
+        type="text"
+        maxlength="25"
+        required
+        [(ngModel)]="formData.title"
+      >
+    </label>
+
+    <app-task-categories
+      name="categoryIds"
+      [categories]="categories()"
+      [(selectedCategoryIds)]="formData.categoryIds"
+    />
+
+    <label for="task-body">
+      Description
+      <input
+        id="task-body"
+        name="body"
+        type="text"
+        [(ngModel)]="formData.body"
+      >
+    </label>
+
+  </form>
+</app-modal-layout>
