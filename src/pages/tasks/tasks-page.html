@@ -37,12 +37,22 @@
     (onPrevious)="previousPage()"
   />
 
-  @if (taskToEdit(); as task) {
-    <app-task-edit
-      [task]="task"
+  <button (click)="openTaskCreateMenu()">+</button>
+
+  @if (isCreateMenuOpen()) {
+    <app-task-form
       [categories]="categories()"
-      (onClose)="closeTaskEditMenu()"
-      (onSave)="updateTask(task.id, $event)"
+      (onClose)="closeMenus()"
+      (onCreate)="createTask($event)"
+    />
+  }
+
+  @if (taskToEdit(); as task) {
+    <app-task-form
+      [inputTask]="task"
+      [categories]="categories()"
+      (onClose)="closeMenus()"
+      (onUpdate)="updateTask(task.id, $event)"
     />
   }
   <button (click)="logout()">logout</button>

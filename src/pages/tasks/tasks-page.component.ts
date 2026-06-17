@@ -1,22 +1,21 @@
-import { Component, computed, inject, OnInit, signal } from "@angular/core";
+import { Component, inject, OnInit, signal } from "@angular/core";
 import { Router } from "@angular/router";
-import { routes } from "@app/app.routes";
 import { CategoryResponseDto } from "@entities/category/api/types";
 import { SessionService } from "@entities/session/model/session.service";
 import { TaskApiService } from "@entities/task/api/task-api.service";
-import { TaskResponseDto, TaskGetQueryDto, TaskStatus, TaskUpdateDto } from "@entities/task/api/types";
+import { TaskResponseDto, TaskGetQueryDto, TaskStatus, TaskUpdateDto, TaskCreateDto } from "@entities/task/api/types";
 import { TaskCardComponent } from "@entities/task/ui/task-card";
-import { TaskEditComponent } from "@features/task-edit/task-edit.component";
 import { TaskFilterBarComponent } from "@features/task-filters/task-filter-bar.component";
+import { TaskFormComponent } from "@features/task-form/task-form.component";
 import { TaskPaginationComponent } from "@features/task-pagination/task-pagination.component";
 
 @Component({
   selector: 'app-tasks-page',
   templateUrl: './tasks-page.html',
   styleUrl: './tasks-page.css',
-  imports: [TaskFilterBarComponent, TaskPaginationComponent, TaskCardComponent, TaskEditComponent],
+  imports: [TaskFilterBarComponent, TaskPaginationComponent, TaskCardComponent, TaskFormComponent],
 })
-export class TaskPageComponent {
+export class TaskPageComponent implements OnInit {
   private readonly api = inject(TaskApiService);
   private readonly temp_sessionApi = inject(SessionService);
   private readonly temp_router = inject(Router);
@@ -24,6 +23,7 @@ export class TaskPageComponent {
   protected readonly tasks = signal<TaskResponseDto[]>([]);
   protected readonly categories = signal<CategoryResponseDto[]>([]);
   protected readonly taskToEdit = signal<TaskResponseDto | null>(null);
+  protected readonly isCreateMenuOpen = signal<boolean>(false);
 
   protected readonly searchTerm = signal<string | null>(null);
   protected readonly selectedCategoryIds = signal<number[] | null>(null);
@@ -58,12 +58,32 @@ export class TaskPageComponent {
     });
   }
 
+  protected openTaskCreateMenu() {
+    this.taskToEdit.set(null);
+    this.isCreateMenuOpen.set(true);
+  }
+
   protected openTaskEditMenu(task: TaskResponseDto) {
+    this.isCreateMenuOpen.set(false);
     this.taskToEdit.set(task);
   }
 
-  protected closeTaskEditMenu() {
+  protected closeMenus() {
     this.taskToEdit.set(null);
+    this.isCreateMenuOpen.set(false);
+  }
+
+  protected createTask(dto: TaskCreateDto) {
+    this.api.create(dto).subscribe({
+      next: (newTask) => {
+        this.tasks.update(currentTasks => [newTask, ...currentTasks]);
+        this.closeMenus();
+      },
+      error: (err) => {
+        console.error('Failed to create task', err);
+        // todo: show error popup
+      }
+    });
   }
 
   protected updateTask(id: number, dto: TaskUpdateDto) {
@@ -73,7 +93,7 @@ export class TaskPageComponent {
       currentTasks.map(t => t.id === id ? { ...t, ...dto } : t)
     );
 
-    this.closeTaskEditMenu();
+    this.closeMenus();
 
     this.api.put(id, dto).subscribe({
       error: (err) => {
@@ -94,8 +114,6 @@ export class TaskPageComponent {
       }
     })
   }
-
-  //todo: addTask
 
   protected nextPage() {
     if (this.tasks().length < this.pageSize()) return;
