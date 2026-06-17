@@ -7,6 +7,11 @@
 
     <ng-content />
 
-    <button (click)="onSave.emit()">Save</button>
+    <button
+      [disabled]="isButtonDisabled()"
+      (click)="onSave.emit()"
+    >
+      {{ button() }}
+    </button>
   </div>
 </div>
