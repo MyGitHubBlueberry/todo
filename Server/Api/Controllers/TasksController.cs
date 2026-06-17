@@ -133,7 +133,6 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
 
         var task = await service.UpdateTaskStatusAsync(id, userId, dto.status);
 
-
         if (task is null)
             return NotFound(new { message = "Task not found." });
 

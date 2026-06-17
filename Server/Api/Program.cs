@@ -39,7 +39,9 @@ internal class Program
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey
                         (Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]
-                            ?? throw new InvalidOperationException("JWT Secret Key is completely missing from appsettings.json!"))),
+                            ?? throw new InvalidOperationException(
+                                "JWT Secret Key is completely missing from appsettings.json!"
+                            ))),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero
@@ -55,6 +57,13 @@ internal class Program
                       .AllowAnyMethod();
             });
         });
+
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters
+                        .Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+                });
 
         var app = builder.Build();
 

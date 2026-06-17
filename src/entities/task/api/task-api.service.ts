@@ -44,7 +44,7 @@ export class TaskApiService {
     return this.http.put<TaskResponseDto>(`${this.baseUrl}/${id}`, dto);
   }
 
-  public putStatus(id: number, dto: TaskStatusUpdateDto): Observable<TaskResponseDto> {
-    return this.http.put<TaskResponseDto>(`${this.baseUrl}/status/${id}`, dto);
+  public patchStatus(id: number, dto: TaskStatusUpdateDto): Observable<TaskResponseDto> {
+    return this.http.patch<TaskResponseDto>(`${this.baseUrl}/${id}/status`, dto);
   }
 }

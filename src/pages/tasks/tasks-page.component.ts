@@ -47,7 +47,7 @@ export class TaskPageComponent implements OnInit {
       currentTasks.map(t => t.id === task.id ? { ...t, status: newStatus } : t)
     );
 
-    this.api.putStatus(task.id, {
+    this.api.patchStatus(task.id, {
       status: newStatus,
     }).subscribe({
       error: () => {
