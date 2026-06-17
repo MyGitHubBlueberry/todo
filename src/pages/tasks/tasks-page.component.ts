@@ -1,3 +1,4 @@
+import { SlicePipe } from "@angular/common";
 import { Component, inject, OnInit, signal } from "@angular/core";
 import { Router } from "@angular/router";
 import { CategoryResponseDto } from "@entities/category/api/types";
@@ -14,7 +15,14 @@ import { ModalLayoutComponent } from "@shared/ui/window-layout/modal-layout.comp
   selector: 'app-tasks-page',
   templateUrl: './tasks-page.html',
   styleUrl: './tasks-page.css',
-  imports: [TaskFilterBarComponent, TaskPaginationComponent, TaskCardComponent, TaskFormComponent, ModalLayoutComponent],
+  imports: [
+    SlicePipe,
+    TaskFilterBarComponent,
+    TaskPaginationComponent,
+    TaskCardComponent,
+    TaskFormComponent,
+    ModalLayoutComponent
+  ],
 })
 export class TaskPageComponent implements OnInit {
   private readonly api = inject(TaskApiService);
