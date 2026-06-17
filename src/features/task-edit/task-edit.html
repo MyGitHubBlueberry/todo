@@ -1,24 +1,20 @@
-<div class="task-edit-container">
-  <div class="task-edit-top">
-    <h2>Task edit menu</h2>
-    <button (click)="onClose.emit()">x</button>
-  </div>
+<app-modal-layout
+  [title]="'Edit Task: ' + updatedTask.title"
+  (onClose)="onClose.emit()"
+  (onSave)="onSave.emit(updatedTask)"
+>
   <label for="task-title">
     Title
-    <input
-      id="task-title"
-      type="text"
-      maxlength="25"
-      required
-      [(ngModel)]="updatedTask.title">
+    <input id="task-title" type="text" maxlength="25" required [(ngModel)]="updatedTask.title">
   </label>
+
   <app-task-categories
     [categories]="categories()"
     [(selectedCategoryIds)]="updatedTask.categoryIds"
   />
+
   <label for="task-body">
     Description
     <input id="task-body" type="text" [(ngModel)]="updatedTask.body">
   </label>
-  <button (click)="onSave.emit(updatedTask)">Save</button>
-</div>
+</app-modal-layout>

@@ -3,11 +3,12 @@ import { FormsModule } from "@angular/forms";
 import { CategoryResponseDto } from "@entities/category/api/types";
 import { TaskResponseDto, TaskUpdateDto } from "@entities/task/api/types";
 import { TaskCategoriesComponent } from "@features/task-categories/task-categories.component";
+import { ModalLayoutComponent } from "@shared/ui/window-layout/modal-layout.component";
 
 @Component({
   selector: 'app-task-edit',
   templateUrl: './task-edit.html',
-  imports: [FormsModule, TaskCategoriesComponent]
+  imports: [FormsModule, TaskCategoriesComponent, ModalLayoutComponent]
 })
 export class TaskEditComponent {
   public readonly task = input.required<TaskResponseDto>();

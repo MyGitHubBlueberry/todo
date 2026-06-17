@@ -38,16 +38,12 @@
   />
 
   @if (taskToEdit(); as task) {
-    <div class="modal-overlay" (click)="closeTaskEditMenu()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <app-task-edit
-          [task]="task"
-          [categories]="categories()"
-          (onClose)="closeTaskEditMenu()"
-          (onSave)="updateTask(task.id, $event)"
-        />
-      </div>
-    </div>
+    <app-task-edit
+      [task]="task"
+      [categories]="categories()"
+      (onClose)="closeTaskEditMenu()"
+      (onSave)="updateTask(task.id, $event)"
+    />
   }
   <button (click)="logout()">logout</button>
 </main>
