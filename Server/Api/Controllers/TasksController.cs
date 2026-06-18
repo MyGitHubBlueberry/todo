@@ -80,18 +80,13 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
     }
 
     [HttpGet]
-    public async Task<ActionResult> GetTasks(
-            [FromQuery] int page,
-            [FromQuery] int pageSize,
-            [FromQuery] int[]? categoryIds = null,
-            [FromQuery] Core.Status? selectedStatus = null,
-            [FromQuery] string? searchTerm = null)
+    public async Task<ActionResult> GetTasks([FromQuery] TaskGetQueryDto dto)
     {
         if (!User.TryGetUserId(out int userId))
             return Unauthorized(new { message = "Invalid token payload." });
 
         var (tasks, totalCount) = await service
-            .GetTasksAsync(userId, page, pageSize, categoryIds, selectedStatus, searchTerm);
+            .GetTasksAsync(userId, dto);
 
         return Ok(new
         {

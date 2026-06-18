@@ -59,45 +59,39 @@ public class TaskService(AppDbContext db) : ITaskService
     }
 
     public async Task<(IEnumerable<TaskResponseDto> Tasks, int TotalCount)>
-        GetTasksAsync(
-            int userId,
-            int page,
-            int pageSize,
-            int[]? categoryIds = null,
-            Core.Status? selectedStatus = null,
-            string? searchTerm = null)
+        GetTasksAsync(int userId, TaskGetQueryDto dto)
     {
         var query = db.Tasks
             .Include(t => t.Categories)
             .Where(t => t.UserId == userId)
             .AsQueryable();
 
-        if (selectedStatus.HasValue) {
-            query = query.Where(t => t.Status == selectedStatus);
+        if (dto.selectedStatus.HasValue) {
+            query = query.Where(t => t.Status == dto.selectedStatus);
         }
 
-        if (categoryIds != null && categoryIds.Length != 0)
+        if (dto.categoryIds != null && dto.categoryIds.Length != 0)
         {
-            var categorySet = categoryIds.ToHashSet();
+            var categorySet = dto.categoryIds.ToHashSet();
             query = query.Where(t => t.Categories.Any(c => categorySet.Contains(c.Id)));
         }
 
-        if (!string.IsNullOrWhiteSpace(searchTerm))
+        if (!string.IsNullOrWhiteSpace(dto.searchTerm))
         {
-            query = query.Where(t => t.Title.Contains(searchTerm)
-                                  || (t.Body != null && t.Body.Contains(searchTerm))
-                                  || t.Categories.Any(c => c.Name.Contains(searchTerm)));
+            query = query.Where(t => t.Title.Contains(dto.searchTerm)
+                                  || (t.Body != null && t.Body.Contains(dto.searchTerm))
+                                  || t.Categories.Any(c => c.Name.Contains(dto.searchTerm)));
         }
 
         var totalCount = await query.CountAsync();
 
-        int maxPage = totalCount == 0 ? 0 : (totalCount - 1) / pageSize;
-        page = Math.Clamp(page, 0, maxPage);
+        int maxPage = totalCount == 0 ? 0 : (totalCount - 1) / dto.pageSize;
+        int page = Math.Clamp(dto.page, 0, maxPage);
 
         var dbTasks = await query
             .OrderBy(t => t.Id)
-            .Skip(page * pageSize)
-            .Take(pageSize)
+            .Skip(page * dto.pageSize)
+            .Take(dto.pageSize)
             .ToListAsync();
 
         return (dbTasks.Select(ToTaskResponseDto), totalCount);

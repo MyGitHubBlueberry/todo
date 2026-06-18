@@ -7,13 +7,7 @@ using Server.Core.Dtos.Task;
 public interface ITaskService
 {
     Task<(IEnumerable<TaskResponseDto> Tasks, int TotalCount)> GetTasksAsync(
-        int userId,
-        int page,
-        int pageSize,
-        int[]? categoryIds,
-        Core.Status? selectedStatus = null,
-        string? searchTerm = null);
-
+        int userId, TaskGetQueryDto dto);
     Task<TaskResponseDto> CreateTaskAsync(int userId, TaskCreateDto taskDto);
     Task<TaskResponseDto?> GetTaskByIdAsync(int taskId, int userId);
     Task<TaskResponseDto?> UpdateTaskAsync(int taskId, int userId, TaskUpdateDto taskDto);
