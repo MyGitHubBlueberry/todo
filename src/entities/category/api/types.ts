@@ -7,7 +7,6 @@ export interface CategoryCreateDto {
   name: string
 }
 
-
 export interface CategoryUpdateDto{
   newName: string
 };

@@ -88,21 +88,23 @@ public class CategoriesController(ILogger<CategoriesController> logger, ICategor
         }
     }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(int id)
+    [HttpDelete()]
+    public async Task<ActionResult> Delete([FromBody] CategoryDeleteDto dto)
     {
         if (!User.TryGetUserId(out int userId))
             return Unauthorized(new { message = "Invalid token payload." });
+        if (dto.ids == null || dto.ids.Length == 0)
+            return BadRequest("No category IDs provided.");
 
-        var result = await service.DeleteCategoryAsync(id, userId);
+        var result = await service.DeleteCategoriesAsync(dto.ids, userId);
         if (!result)
         {
-            logger.LogWarning("Failed to delete category with id '{Id}'", id);
-            return NotFound(new { message = "Category doesn't exist" });
+            logger.LogWarning("Failed to delete categories");
+            return NotFound(new { message = "Categories don't exist" });
         }
 
-        logger.LogInformation("User {UserId} successfully deleted category {Id}.",
-                userId, id);
+        logger.LogInformation("User {UserId} successfully deleted categories {ids}.",
+                userId, dto.ids);
 
         return NoContent();
     }

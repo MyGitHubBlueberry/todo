@@ -7,10 +7,12 @@ import { SessionService } from "@entities/session/model/session.service";
 import { TaskApiService } from "@entities/task/api/task-api.service";
 import { TaskResponseDto, TaskGetQueryDto, TaskStatus, TaskUpdateDto, TaskCreateDto, SortBy } from "@entities/task/api/types";
 import { TaskCardComponent } from "@entities/task/ui/task-card";
+import { TaskCategoriesComponent } from "@features/task-categories/task-categories.component";
 import { TaskFilterBarComponent } from "@features/task-filters/task-filter-bar.component";
 import { TaskFormComponent } from "@features/task-form/task-form.component";
 import { TaskPaginationComponent } from "@features/task-pagination/task-pagination.component";
 import { ModalLayoutComponent } from "@shared/ui/window-layout/modal-layout.component";
+import { filter } from "rxjs";
 
 @Component({
   selector: 'app-tasks-page',
@@ -20,6 +22,7 @@ import { ModalLayoutComponent } from "@shared/ui/window-layout/modal-layout.comp
     SlicePipe,
     TaskFilterBarComponent,
     TaskPaginationComponent,
+    TaskCategoriesComponent,
     TaskCardComponent,
     TaskFormComponent,
     ModalLayoutComponent
@@ -40,6 +43,7 @@ export class TaskPageComponent implements OnInit {
   protected readonly isCreateMenuOpen = signal<boolean>(false);
   protected readonly isCreateCategoryMenuOpen = signal<boolean>(false);
   protected readonly isDeleteCategoryMenuOpen = signal<boolean>(false);
+  protected readonly isDeleteCategoryConfirmationMenuOpen = signal<boolean>(false);
 
   protected readonly selectedCategoryIds = signal<number[]>([]);
   protected readonly sortBy = signal<SortBy>("CrtAsc");
@@ -124,6 +128,7 @@ export class TaskPageComponent implements OnInit {
     this.isCreateMenuOpen.set(false);
     this.isCreateCategoryMenuOpen.set(false);
     this.isDeleteCategoryMenuOpen.set(false);
+    this.isDeleteCategoryConfirmationMenuOpen.set(false);
   }
 
   protected createTask(dto: TaskCreateDto) {
@@ -203,6 +208,18 @@ export class TaskPageComponent implements OnInit {
       },
       error: (err) => {
         console.error("Failed to create category", err);
+      }
+    });
+  }
+
+  protected deleteCategories() {
+    this.closeMenus();
+    const ids = this.categoriesToDeleteById();
+    this.categories.update(list => list.filter(c => !ids.includes(c.id)));
+    this.categoriesToDeleteById.set([]);
+    this.categoryApi.delete(ids).subscribe({
+      error: (err) => {
+        console.error("Failed to delete category", err);
       }
     });
   }

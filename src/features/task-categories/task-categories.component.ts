@@ -12,7 +12,7 @@ import { CategoryResponseDto } from "@entities/category/api/types";
         [(ngModel)]="selectedCategoryIds"
       >
         @for (category of categories(); track category.id) {
-          <option [ngValue]="category" class="search-category">
+          <option [ngValue]="category.id" class="search-category">
             {{ category.name }}
           </option>
         }

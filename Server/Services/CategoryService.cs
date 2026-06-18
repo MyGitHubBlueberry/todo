@@ -31,9 +31,9 @@ public class CategoryService(AppDbContext db) : ICategoryService
         return new CategoryResponseDto(category.Id, category.Name);
     }
 
-    public async Task<bool> DeleteCategoryAsync(int categoryId, int userId) =>
+    public async Task<bool> DeleteCategoriesAsync(int[] categoryIds, int userId) =>
         (await db.Categories
-            .Where(c => c.Id == categoryId && c.UserId == userId)
+            .Where(c => c.UserId == userId && categoryIds.Contains(c.Id))
             .ExecuteDeleteAsync()) != 0;
 
     public async Task<IEnumerable<CategoryResponseDto>> GetCategoriesAsync(int userId) =>

@@ -13,6 +13,8 @@ import { ModalLayoutComponent } from "@shared/ui/window-layout/modal-layout.comp
 export class TaskFormComponent implements OnInit {
   public readonly inputTask = input<TaskResponseDto | null>(null);
   public readonly categories = input.required<CategoryResponseDto[]>();
+  public readonly selectedCategoryIds: number[] =
+    this.inputTask()?.categories.map(c => c.id) ?? [];
 
   public readonly onClose = output<void>();
   public readonly onCreate = output<TaskCreateDto>();
@@ -44,6 +46,7 @@ export class TaskFormComponent implements OnInit {
   }
 
   protected submitForm() {
+    this.formData.categoryIds = this.selectedCategoryIds;
     if (this.isEditMode) {
       this.onUpdate.emit(this.formData);
     } else {

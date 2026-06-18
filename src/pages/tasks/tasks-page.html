@@ -7,7 +7,7 @@
       [(selectedCategoryIds)]="selectedCategoryIds"
       [(selectedStatus)]="selectedStatus"
       [(sortBy)]="sortBy"
-      (sortByChange)="sortTaskPage($event)"
+      (sortByChange)="sortTaskPage()"
       (showCreateCategoryForm)="isCreateCategoryMenuOpen.set(true)";
       (showDeleteCategoryForm)="isDeleteCategoryMenuOpen.set(true)";
       (onSearch)="searchTerm.set($event); fetchTasks()"
@@ -94,14 +94,26 @@
     <app-modal-layout
       title="Task Categories"
       button="Delete"
-      <!-- [isButtonDisabled]="" -->
+      [isButtonDisabled]="categoriesToDeleteById().length === 0"
       (onClose)="closeMenus()"
-      <!-- (onSave)="showDeleteConfirmation()" -->
+      (onSave)="isDeleteCategoryConfirmationMenuOpen.set(true);"
       >
         <app-task-categories
           [categories]="categories()"
           [(selectedCategoryIds)]="categoriesToDeleteById"
         />
+    </app-modal-layout>
+  }
+
+  @if (isDeleteCategoryConfirmationMenuOpen()) {
+    <app-modal-layout
+      title="Delete Selected Categories"
+      button="Delete"
+      [isButtonDisabled]="false"
+      (onClose)="closeMenus()"
+      (onSave)="deleteCategories()"
+      >
+       <p>This action is permanent and cannot be undone. Do you want to proceed?</p>
     </app-modal-layout>
   }
   <button (click)="logout()">logout</button>

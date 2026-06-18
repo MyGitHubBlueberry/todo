@@ -19,7 +19,10 @@ export class CategoryApiService {
   public put(dto: CategoryUpdateDto): Observable<CategoryResponseDto> {
     return this.http.put<CategoryResponseDto>(this.baseUrl, dto);
   }
-  public delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+
+  public delete(ids: number[]): Observable<void> {
+    return this.http.delete<void>(this.baseUrl, {
+        body: { ids: ids }
+    });
   }
 }
