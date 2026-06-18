@@ -16,7 +16,9 @@
       </label>
     </div>
   }
-  <button type="button" (click)="showCreateCategoryForm.emit()">Create Category</button>
+  <button type="button" (click)="selectedCategoryIds.update(() => [])">Clear</button>
+  <button type="button" (click)="showCreateCategoryForm.emit()">Create</button>
+  <button type="button" (click)="showDeleteCategoryForm.emit()">Delete</button>
 </details>
 <div class="search-controls">
   <label for="filters">

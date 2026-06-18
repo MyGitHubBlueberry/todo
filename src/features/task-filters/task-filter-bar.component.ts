@@ -16,6 +16,7 @@ export class TaskFilterBarComponent {
   public selectedStatus = model<TaskStatus | null>(null);
 
   public showCreateCategoryForm = output<void>();
+  public showDeleteCategoryForm = output<void>();
   public onSearch = output<string>();
 
   protected onCheckboxChange(categoryId: number, event: Event) {

@@ -35,9 +35,11 @@ export class TaskPageComponent implements OnInit {
   protected readonly categories = signal<CategoryResponseDto[]>([]);
   protected readonly taskToEdit = signal<TaskResponseDto | null>(null);
   protected readonly taskToDelete = signal<TaskResponseDto | null>(null);
+  protected readonly categoriesToDeleteById = signal<number[]>([])
 
   protected readonly isCreateMenuOpen = signal<boolean>(false);
   protected readonly isCreateCategoryMenuOpen = signal<boolean>(false);
+  protected readonly isDeleteCategoryMenuOpen = signal<boolean>(false);
 
   protected readonly selectedCategoryIds = signal<number[]>([]);
   protected readonly sortBy = signal<SortBy>("CrtAsc");
@@ -121,6 +123,7 @@ export class TaskPageComponent implements OnInit {
     this.taskToDelete.set(null);
     this.isCreateMenuOpen.set(false);
     this.isCreateCategoryMenuOpen.set(false);
+    this.isDeleteCategoryMenuOpen.set(false);
   }
 
   protected createTask(dto: TaskCreateDto) {

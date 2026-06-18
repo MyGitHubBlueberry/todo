@@ -9,6 +9,7 @@
       [(sortBy)]="sortBy"
       (sortByChange)="sortTaskPage($event)"
       (showCreateCategoryForm)="isCreateCategoryMenuOpen.set(true)";
+      (showDeleteCategoryForm)="isDeleteCategoryMenuOpen.set(true)";
       (onSearch)="searchTerm.set($event); fetchTasks()"
     />
   </header>
@@ -86,6 +87,21 @@
         Name
         <input type="text" #categoryName (input)="0"/>
       </label>
+    </app-modal-layout>
+  }
+
+  @if (isDeleteCategoryMenuOpen()) {
+    <app-modal-layout
+      title="Task Categories"
+      button="Delete"
+      <!-- [isButtonDisabled]="" -->
+      (onClose)="closeMenus()"
+      <!-- (onSave)="showDeleteConfirmation()" -->
+      >
+        <app-task-categories
+          [categories]="categories()"
+          [(selectedCategoryIds)]="categoriesToDeleteById"
+        />
     </app-modal-layout>
   }
   <button (click)="logout()">logout</button>
