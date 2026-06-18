@@ -83,13 +83,27 @@ public class TaskService(AppDbContext db) : ITaskService
                                   || t.Categories.Any(c => c.Name.Contains(dto.searchTerm)));
         }
 
+        query = dto.sortBy switch
+        {
+            SortBy.AlphAsc => query.OrderBy(t => t.Title),
+            SortBy.AlphDsc => query.OrderByDescending(t => t.Title),
+            SortBy.CrtAsc => query.OrderBy(t => t.CreatedAt),
+            SortBy.CrtDsc => query.OrderByDescending(t => t.CreatedAt),
+            SortBy.UpdAsc => query.OrderByDescending(t => t.UpdatedAt.HasValue)
+                .ThenBy(t => t.UpdatedAt),
+            SortBy.UpdDsc => query.OrderByDescending(t => t.UpdatedAt),
+
+            _ => query.OrderByDescending(t => t.Id)
+        };
+
+        Console.WriteLine(dto.sortBy);
+
         var totalCount = await query.CountAsync();
 
         int maxPage = totalCount == 0 ? 0 : (totalCount - 1) / dto.pageSize;
         int page = Math.Clamp(dto.page, 0, maxPage);
 
         var dbTasks = await query
-            .OrderBy(t => t.Id)
             .Skip(page * dto.pageSize)
             .Take(dto.pageSize)
             .ToListAsync();

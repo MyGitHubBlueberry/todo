@@ -1,0 +1,32 @@
+<div class="search-controls">
+  <app-task-categories
+    [categories]="categories()"
+    [(selectedCategoryIds)]="selectedCategoryIds"
+  />
+
+  <label for="filters">
+    Filters
+    <select id="filters" class="search-filters" [(ngModel)]="selectedStatus">
+      <option [ngValue]="null" class="search-filter">All</option>
+      <option value="Done" class="search-filter">Done</option>
+      <option value="Pending" class="search-filter">Pending</option>
+    </select>
+  </label>
+
+  <label for="sort">
+    Sort
+    <select id="sort" class="sort-filters" [(ngModel)]="sortBy">
+      <option value="AlphAsc" class="sort-filter">Alphabetically</option>
+      <option value="AlphDsc" class="sort-filter">Alphabetically Reversed</option>
+      <option value="CrtAsc" class="sort-filter">By Created Date</option>
+      <option value="CrtDsc" class="sort-filter">By Created Date Reversed</option>
+      <option value="UpdAsc" class="sort-filter">By Updated Date</option>
+      <option value="UpdDsc" class="sort-filter">By Updated Date Reversed</option>
+    </select>
+  </label>
+
+  <input type="text" placeholder="Search tasks..." #searchInput
+    (keyup.enter)="onSearch.emit(searchInput.value)" />
+
+  <button (click)="onSearch.emit(searchInput.value)">Search</button>
+</div>

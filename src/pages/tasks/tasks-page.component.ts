@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { CategoryResponseDto } from "@entities/category/api/types";
 import { SessionService } from "@entities/session/model/session.service";
 import { TaskApiService } from "@entities/task/api/task-api.service";
-import { TaskResponseDto, TaskGetQueryDto, TaskStatus, TaskUpdateDto, TaskCreateDto } from "@entities/task/api/types";
+import { TaskResponseDto, TaskGetQueryDto, TaskStatus, TaskUpdateDto, TaskCreateDto, SortBy } from "@entities/task/api/types";
 import { TaskCardComponent } from "@entities/task/ui/task-card";
 import { TaskFilterBarComponent } from "@features/task-filters/task-filter-bar.component";
 import { TaskFormComponent } from "@features/task-form/task-form.component";
@@ -38,6 +38,7 @@ export class TaskPageComponent implements OnInit {
   protected readonly searchTerm = signal<string | null>(null);
   protected readonly selectedCategoryIds = signal<number[] | null>(null);
   protected readonly selectedStatus = signal<TaskStatus | null>(null);
+  protected readonly sortBy = signal<SortBy>("CrtAsc");
 
   protected readonly pageSize = signal<number>(10);
   protected readonly currentPage = signal<number>(0);
@@ -150,6 +151,7 @@ export class TaskPageComponent implements OnInit {
     var query: TaskGetQueryDto = {
       page: this.currentPage(),
       pageSize: this.pageSize(),
+      sortBy: this.sortBy(),
       searchTerm: this.searchTerm(),
       categoryIds: this.selectedCategoryIds(),
       selectedStatus: this.selectedStatus()

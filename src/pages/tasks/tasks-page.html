@@ -6,6 +6,7 @@
       [categories]="categories()"
       [(selectedCategoryIds)]="selectedCategoryIds"
       [(selectedStatus)]="selectedStatus"
+      [(sortBy)]="sortBy"
       (onSearch)="searchTerm.set($event); fetchTasks()"
     />
   </header>

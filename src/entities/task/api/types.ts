@@ -19,6 +19,7 @@ export interface TaskStatusUpdateDto {
 export interface TaskGetQueryDto {
     page: number,
     pageSize: number,
+    sortBy: SortBy,
     categoryIds: number[] | null,
     selectedStatus: TaskStatus | null,
     searchTerm: string | null,
@@ -30,6 +31,14 @@ export interface TaskPaginatedResponseDto {
 }
 
 export type TaskStatus = 'Done' | 'Pending';
+
+export type SortBy =
+  | 'AlphAsc'
+  | 'AlphDsc'
+  | 'CrtAsc'
+  | 'CrtDsc'
+  | 'UpdAsc'
+  | 'UpdDsc';
 
 export interface TaskResponseDto {
   id: number,
