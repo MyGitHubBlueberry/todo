@@ -1,8 +1,21 @@
+<div class="categories">
+  @for (category of selectedCategories(); track category.id) {
+  <div class="category-filter">
+    <p>{{ category.name }}</p>
+    <button (click)="removeFilterCategory(category.id)">x</button>
+  </div>
+  }
+</div>
 <div class="search-controls">
-  <app-task-categories
-    [categories]="categories()"
-    [(selectedCategoryIds)]="selectedCategoryIds"
-  />
+  <button (click)="showAddFilterCategories=!showAddFilterCategories">Add Category</button>
+  @if (showAddFilterCategories) {
+    <app-filter-add-categories
+      [categories]="categories()"
+      [(selectedCategories)]="selectedCategories"
+      (onClose)="showAddFilterCategories=false"
+      (onCreateCategory)="onCreateCategory.emit($event)"
+    />
+  }
 
   <label for="filters">
     Filters
@@ -25,8 +38,7 @@
     </select>
   </label>
 
-  <input type="text" placeholder="Search tasks..." #searchInput
-    (keyup.enter)="onSearch.emit(searchInput.value)" />
+  <input type="text" placeholder="Search tasks..." #searchInput (keyup.enter)="onSearch.emit(searchInput.value)" />
 
   <button (click)="onSearch.emit(searchInput.value)">Search</button>
 </div>

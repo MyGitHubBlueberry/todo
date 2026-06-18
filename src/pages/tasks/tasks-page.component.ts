@@ -1,6 +1,7 @@
 import { SlicePipe } from "@angular/common";
 import { Component, inject, OnInit, signal } from "@angular/core";
 import { Router } from "@angular/router";
+import { CategoryApiService } from "@entities/category/api/category.service";
 import { CategoryResponseDto } from "@entities/category/api/types";
 import { SessionService } from "@entities/session/model/session.service";
 import { TaskApiService } from "@entities/task/api/task-api.service";
@@ -25,7 +26,8 @@ import { ModalLayoutComponent } from "@shared/ui/window-layout/modal-layout.comp
   ],
 })
 export class TaskPageComponent implements OnInit {
-  private readonly api = inject(TaskApiService);
+  private readonly taskApi = inject(TaskApiService);
+  private readonly categoryApi = inject(CategoryApiService);
   private readonly temp_sessionApi = inject(SessionService);
   private readonly temp_router = inject(Router);
 
@@ -35,10 +37,10 @@ export class TaskPageComponent implements OnInit {
   protected readonly taskToDelete = signal<TaskResponseDto | null>(null);
   protected readonly isCreateMenuOpen = signal<boolean>(false);
 
-  protected readonly searchTerm = signal<string | null>(null);
-  protected readonly selectedCategoryIds = signal<number[] | null>(null);
-  protected readonly selectedStatus = signal<TaskStatus | null>(null);
+  protected readonly selectedCategories = signal<CategoryResponseDto[]>([]);
   protected readonly sortBy = signal<SortBy>("CrtAsc");
+  protected readonly searchTerm = signal<string | null>(null);
+  protected readonly selectedStatus = signal<TaskStatus | null>(null);
 
   protected readonly pageSize = signal<number>(10);
   protected readonly currentPage = signal<number>(0);
@@ -48,7 +50,7 @@ export class TaskPageComponent implements OnInit {
 
   ngOnInit() {
     this.fetchTasks();
-    //todo: this.fetchCategories();
+    this.fetchCategories();
   }
 
   protected toggleTask(task: TaskResponseDto) {
@@ -58,7 +60,7 @@ export class TaskPageComponent implements OnInit {
       currentTasks.map(t => t.id === task.id ? { ...t, status: newStatus } : t)
     );
 
-    this.api.patchStatus(task.id, {
+    this.taskApi.patchStatus(task.id, {
       status: newStatus,
     }).subscribe({
       error: () => {
@@ -86,7 +88,7 @@ export class TaskPageComponent implements OnInit {
   }
 
   protected createTask(dto: TaskCreateDto) {
-    this.api.create(dto).subscribe({
+    this.taskApi.create(dto).subscribe({
       next: (newTask) => {
         this.tasks.update(currentTasks => [newTask, ...currentTasks]);
         this.closeMenus();
@@ -107,7 +109,7 @@ export class TaskPageComponent implements OnInit {
 
     this.closeMenus();
 
-    this.api.put(id, dto).subscribe({
+    this.taskApi.put(id, dto).subscribe({
       error: (err) => {
         //todo: show it as popup message
         console.error('Failed to update task', err);
@@ -127,7 +129,7 @@ export class TaskPageComponent implements OnInit {
 
     this.closeMenus();
 
-    this.api.delete(id).subscribe({
+    this.taskApi.delete(id).subscribe({
       error: () => {
         this.tasks.set(previousTasks);
       }
@@ -146,6 +148,26 @@ export class TaskPageComponent implements OnInit {
     this.fetchTasks();
   }
 
+  protected fetchCategories() {
+    this.categoryApi.get().subscribe({
+      next: (data) => {
+        this.categories.set(data);
+      }
+    });
+  }
+
+  protected createCategory(name: string) {
+    this.categoryApi.create({ name }).subscribe({
+      next: (newCategory) => {
+        this.categories.update(list => [...list, newCategory]);
+      },
+      error: (err) => {
+        this.categories.update(list => list.filter(c => c.name !== name));
+        console.error("Failed to create category", err);
+      }
+    });
+  }
+
   protected fetchTasks() {
     this.isLoading.set(true);
     var query: TaskGetQueryDto = {
@@ -153,10 +175,10 @@ export class TaskPageComponent implements OnInit {
       pageSize: this.pageSize(),
       sortBy: this.sortBy(),
       searchTerm: this.searchTerm(),
-      categoryIds: this.selectedCategoryIds(),
+      categoryIds: this.selectedCategories().map(c => c.id),
       selectedStatus: this.selectedStatus()
     };
-    this.api.get(query).subscribe({
+    this.taskApi.get(query).subscribe({
       next: (data) => {
         this.isLoading.set(false);
         this.tasks.set(data.tasks);

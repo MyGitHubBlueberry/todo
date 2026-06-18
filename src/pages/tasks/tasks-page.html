@@ -4,9 +4,10 @@
 
     <app-task-filter-bar
       [categories]="categories()"
-      [(selectedCategoryIds)]="selectedCategoryIds"
+      [(selectedCategories)]="selectedCategories"
       [(selectedStatus)]="selectedStatus"
       [(sortBy)]="sortBy"
+      (onCreateCategory)="createCategory($event)";
       (onSearch)="searchTerm.set($event); fetchTasks()"
     />
   </header>

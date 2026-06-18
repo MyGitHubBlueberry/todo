@@ -2,19 +2,31 @@ import { Component, input, model, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CategoryResponseDto } from '@entities/category/api/types';
 import { SortBy, TaskStatus } from '@entities/task/api/types';
-import { TaskCategoriesComponent } from '@features/task-categories/task-categories.component';
+import { FilterAddCategoriesComponent } from '@features/filter-add-categories/filter-add-categories.component';
 
 @Component({
   selector: 'app-task-filter-bar',
   templateUrl: './task-filter-bar.html',
-  imports: [FormsModule, TaskCategoriesComponent],
+  imports: [
+    FormsModule,
+    FilterAddCategoriesComponent
+  ],
 })
 export class TaskFilterBarComponent {
   public categories = input.required<CategoryResponseDto[]>();
+  public selectedCategories = model.required<CategoryResponseDto[]>();
+  public sortBy = model.required<SortBy>();
 
-  public selectedCategoryIds = model<number[] | null>(null);
   public selectedStatus = model<TaskStatus | null>(null);
-  public sortBy = model<SortBy>();
 
+  public onCreateCategory = output<string>();
   public onSearch = output<string>();
+
+  protected showAddFilterCategories = false;
+
+  protected removeFilterCategory(id: number) {
+    this.selectedCategories.update(current =>
+      current.filter(c => c.id !== id)
+    );
+  }
 }
