@@ -2,8 +2,8 @@
 ## Db design
 ![db schema](./public/db.png)
 ## Todo plan
- - [ ] add ability to add categories
- - [ ] fetch categories
+ - [x] add ability to add categories
+ - [x] fetch categories
  - [ ] add filters
    - updated and not updated (not changed)
  - [x] add sorting and reverse sorting options

@@ -35,9 +35,11 @@ export class TaskPageComponent implements OnInit {
   protected readonly categories = signal<CategoryResponseDto[]>([]);
   protected readonly taskToEdit = signal<TaskResponseDto | null>(null);
   protected readonly taskToDelete = signal<TaskResponseDto | null>(null);
-  protected readonly isCreateMenuOpen = signal<boolean>(false);
 
-  protected readonly selectedCategories = signal<CategoryResponseDto[]>([]);
+  protected readonly isCreateMenuOpen = signal<boolean>(false);
+  protected readonly isCreateCategoryMenuOpen = signal<boolean>(false);
+
+  protected readonly selectedCategoryIds = signal<number[]>([]);
   protected readonly sortBy = signal<SortBy>("CrtAsc");
   protected readonly searchTerm = signal<string | null>(null);
   protected readonly selectedStatus = signal<TaskStatus | null>(null);
@@ -83,8 +85,9 @@ export class TaskPageComponent implements OnInit {
 
   protected closeMenus() {
     this.taskToEdit.set(null);
-    this.isCreateMenuOpen.set(false);
     this.taskToDelete.set(null);
+    this.isCreateMenuOpen.set(false);
+    this.isCreateCategoryMenuOpen.set(false);
   }
 
   protected createTask(dto: TaskCreateDto) {
@@ -157,12 +160,12 @@ export class TaskPageComponent implements OnInit {
   }
 
   protected createCategory(name: string) {
+    this.closeMenus();
     this.categoryApi.create({ name }).subscribe({
       next: (newCategory) => {
         this.categories.update(list => [...list, newCategory]);
       },
       error: (err) => {
-        this.categories.update(list => list.filter(c => c.name !== name));
         console.error("Failed to create category", err);
       }
     });
@@ -175,7 +178,7 @@ export class TaskPageComponent implements OnInit {
       pageSize: this.pageSize(),
       sortBy: this.sortBy(),
       searchTerm: this.searchTerm(),
-      categoryIds: this.selectedCategories().map(c => c.id),
+      categoryIds: this.selectedCategoryIds(),
       selectedStatus: this.selectedStatus()
     };
     this.taskApi.get(query).subscribe({

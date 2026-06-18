@@ -4,10 +4,10 @@
 
     <app-task-filter-bar
       [categories]="categories()"
-      [(selectedCategories)]="selectedCategories"
+      [(selectedCategoryIds)]="selectedCategoryIds"
       [(selectedStatus)]="selectedStatus"
       [(sortBy)]="sortBy"
-      (onCreateCategory)="createCategory($event)";
+      (showCreateCategoryForm)="isCreateCategoryMenuOpen.set(true)";
       (onSearch)="searchTerm.set($event); fetchTasks()"
     />
   </header>
@@ -70,6 +70,21 @@
         <p>Are you sure you want to permanently delete <strong>{{ task.title }}</strong>?</p>
         <p>This action cannot be undone.</p>
       </div>
+    </app-modal-layout>
+  }
+
+  @if (isCreateCategoryMenuOpen()) {
+    <app-modal-layout
+      title="Task Categories"
+      button="Create Category"
+      [isButtonDisabled]="!categoryName.value || categoryName.value.trim() === ''"
+      (onClose)="closeMenus()"
+      (onSave)="createCategory(categoryName.value)"
+      >
+      <label>
+        Name
+        <input type="text" #categoryName (input)="0"/>
+      </label>
     </app-modal-layout>
   }
   <button (click)="logout()">logout</button>
