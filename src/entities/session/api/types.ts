@@ -3,10 +3,7 @@ export interface LoginDto {
   password: string,
 }
 
-export interface RegistrationDto {
-  login: string,
-  password: string,
-}
+export interface RegistrationDto extends LoginDto { }
 
 export interface TokensDto {
   accessToken: string,

@@ -31,7 +31,7 @@ export class LoginByUsernameComponent {
     this.isLoading.set(true);
     this.backendError.set(null);
 
-    var payload: LoginDto = {
+    const payload: LoginDto = {
       login: this.loginForm.value.login!,
       password: this.loginForm.value.password!,
     };
