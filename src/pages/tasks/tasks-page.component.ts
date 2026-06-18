@@ -55,6 +55,39 @@ export class TaskPageComponent implements OnInit {
     this.fetchCategories();
   }
 
+  protected sortTaskPage() {
+    this.tasks.update(tasks => {
+      const sortedTasks = [...tasks];
+
+      sortedTasks.sort((a, b) => {
+        switch (this.sortBy()) {
+          case 'AlphAsc':
+            return a.title.localeCompare(b.title);
+          case 'AlphDsc':
+            return b.title.localeCompare(a.title);
+          case 'CrtAsc':
+            return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          case 'CrtDsc':
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          case 'UpdAsc':
+            if (!a.updatedAt && !b.updatedAt) return 0;
+            if (!a.updatedAt) return 1;
+            if (!b.updatedAt) return -1;
+            return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
+          case 'UpdDsc':
+            if (!a.updatedAt && !b.updatedAt) return 0;
+            if (!a.updatedAt) return 1;
+            if (!b.updatedAt) return -1;
+            return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+          default:
+            return 0;
+        }
+      });
+
+      return sortedTasks;
+    });
+  }
+
   protected toggleTask(task: TaskResponseDto) {
     const newStatus: TaskStatus = task.status == 'Done' ? 'Pending' : 'Done';
 

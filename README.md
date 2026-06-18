@@ -4,8 +4,7 @@
 ## Todo plan
  - [x] add ability to add categories
  - [x] fetch categories
- - [ ] add filters
-   - updated and not updated (not changed)
+ - [ ] add category deletion
  - [x] add sorting and reverse sorting options
    - alphabetically
    - by creation date 
