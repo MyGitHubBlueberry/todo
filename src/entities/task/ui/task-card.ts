@@ -1,27 +1,19 @@
-import { Component, input, output } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, input, output, signal } from '@angular/core';
 import { TaskResponseDto } from '@entities/task/api/types';
 
 @Component({
   selector: 'app-task-card',
-  template: `
-    <li class="task-card">
-      <label>
-        <input
-          type="checkbox"
-          [checked]="task().status === 'Done'"
-          (change)="onToggle.emit(task())"
-        />
-        <span [class.completed]="task().status === 'Done'">
-          {{ task().title }}
-        </span>
-      </label>
-
-      <button (click)="onEdit.emit(task())">Edit</button>
-    </li>
-  `
+  templateUrl: './task-card.html',
+  imports: [DatePipe],
 })
 export class TaskCardComponent {
   public task = input.required<TaskResponseDto>();
   public onToggle = output<TaskResponseDto>();
   public onEdit = output<TaskResponseDto>();
+  protected readonly isExpanded = signal(false);
+
+  toggleExpand() {
+    this.isExpanded.update(val => !val);
+  }
 }

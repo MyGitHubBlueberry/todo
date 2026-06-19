@@ -48,6 +48,15 @@
   }
 }
 
+@layer utilities {
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
 @theme {
   --color-brand-dark: #1e1e2f;
   --color-brand-surface: #2a2a40;
