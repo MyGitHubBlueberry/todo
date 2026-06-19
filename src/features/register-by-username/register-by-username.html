@@ -3,9 +3,9 @@
   [backendError]="backendError()"
   submitButtonText="Register"
   (formSubmit)="register()">
-  @if (registerForm.get('login')?.invalid
-    && (registerForm.get('login')?.dirty || registerForm.get('login')?.touched)) {
-    <div login-errors class="error-container">
+
+  @if (registerForm.get('login')?.invalid && (registerForm.get('login')?.dirty || registerForm.get('login')?.touched)) {
+    <div login-errors class="flex flex-col">
       @if (registerForm.get('login')?.hasError('required')) {
         <span class="form-validation-error">Username is required.</span>
       }
@@ -18,9 +18,8 @@
     </div>
   }
 
-  @if (registerForm.get('password')?.invalid
-    && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)) {
-    <div password-errors class="error-container">
+  @if (registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)) {
+    <div password-errors class="flex flex-col">
       @if (registerForm.get('password')?.hasError('required')) {
         <span class="form-validation-error">Password is required.</span>
       }
@@ -30,19 +29,20 @@
     </div>
   }
 
-  <label class="form-row-label">
-    <span class="form-label-text">Confirm Password:</span>
+  <label class="form-label">
+    Confirm Password:
     <input type="password" formControlName="confirmPassword" class="form-input" />
   </label>
-  <div class="error-container">
-    @if (registerForm.get('confirmPassword')?.invalid
-      && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)) {
+
+  @if ((registerForm.get('confirmPassword')?.invalid && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)) || (registerForm.hasError('passwordMismatch') && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched))) {
+    <div class="flex flex-col">
       @if (registerForm.get('confirmPassword')?.hasError('required')) {
-        <span class="form-validation-error">Password confirmation is requiered.</span>
+        <span class="form-validation-error">Password confirmation is required.</span>
       }
-    }
-    @if (registerForm.hasError('passwordMismatch')) {
-      <span class="form-validation-error">Passwords do not match.</span>
-    }
-  </div>
+      @if (registerForm.hasError('passwordMismatch')) {
+        <span class="form-validation-error">Passwords do not match.</span>
+      }
+    </div>
+  }
+
 </app-auth-form-layout>

@@ -1,25 +1,25 @@
 <main class="bg-brand-dark min-h-screen flex flex-col items-center justify-center">
-  <h1 class="text-9xl font-bold select-none">TODO</h1>
   <div class="w-full max-w-md">
-    <header class="flex justify-around mt-1 bg-brand-dark rounded-t-2xl">
+    <h1 class="text-6xl md:text-8xl lg:text-9xl font-bold text-brand-text select-none text-center mb-8 tracking-wide transition-all">
+      TODO
+    </h1>
+    <header class="flex mt-1 rounded-t-2xl overflow-hidden border-t border-x border-brand-border">
+
       <button type="button"
-        [class.active]="currentForm() === 'login'"
         (click)="showLoginForm()"
-        class="flex-1 py-3 border-l border-t border-brand-border rounded-tl-2xl transition-all"
+        class="flex-1 py-3 transition-all font-semibold"
         [class]="currentForm() === 'login'
-          ? 'text-brand-text bg-brand-surface'
-          : 'bg-brand-dark text-brand-muted hover:text-brand-text hover:bg-brand-dark/30'"
-        >
+          ? 'bg-brand-surface text-brand-text border-b-2 border-brand-primary'
+          : 'bg-brand-dark text-brand-muted hover:text-brand-text hover:bg-brand-surface/50'">
         Login
       </button>
+
       <button type="button"
-        [class.active]="currentForm() === 'register'"
         (click)="showRegisterForm()"
-        class="flex-1 py-3 border-x border-t border-brand-border rounded-tr-2xl transition-all"
-        [class]="currentForm() === 'login'
-          ? 'bg-brand-dark text-brand-muted hover:text-brand-text hover:bg-brand-dark/30'
-          : 'text-brand-text bg-brand-surface'"
-        >
+        class="flex-1 py-3 transition-all font-semibold border-brand-border"
+        [class]="currentForm() === 'register'
+          ? 'bg-brand-surface text-brand-text border-b-2 border-brand-primary'
+          : 'bg-brand-dark text-brand-muted hover:text-brand-text hover:bg-brand-surface/50'">
         Register
       </button>
     </header>

@@ -4,26 +4,25 @@
   * {
     color: var(--color-brand-text);
   }
+  body {
+    background-color: var(--color-brand-dark);
+  }
   button {
     cursor: pointer;
   }
 }
 
 @layer components {
-  .form-row-label {
-    @apply flex items-center space-x-4 w-full cursor-pointer mt-4;
-  }
-
-  .form-label-text {
-    @apply text-brand-muted text-sm font-medium whitespace-nowrap w-32;
+  .form-label {
+    @apply flex flex-col space-y-1 md:space-y-2 text-brand-muted text-base md:text-lg font-medium cursor-pointer w-full;
   }
 
   .form-input {
-    @apply flex-1 px-2 bg-brand-dark border border-brand-border rounded-md focus:ring-1 focus:ring-brand-primary focus:outline-none transition-all;
+    @apply w-full text-base md:text-lg bg-brand-dark border border-brand-border rounded-md focus:ring-1 focus:ring-brand-primary focus:outline-none transition-all;
   }
 
   .btn-primary {
-    @apply w-full bg-brand-primary hover:bg-brand-primary-hover disabled:bg-brand-border disabled:text-brand-muted font-semibold py-2 rounded-lg shadow transition-all active:scale-95;
+    @apply w-full bg-brand-primary hover:bg-brand-primary-hover disabled:bg-brand-border disabled:text-brand-muted font-semibold text-base md:text-lg py-2 md:py-3 rounded-lg shadow transition-all active:scale-95;
   }
 
   .form-input.ng-invalid.ng-touched {
@@ -31,7 +30,7 @@
   }
 
   .form-validation-error {
-    @apply text-brand-danger font-semibold text-xs ml-[9rem] block;
+    @apply text-brand-danger font-semibold text-xs md:text-sm mt-1 block;
   }
 }
 
