@@ -3,7 +3,7 @@
     <label class="flex items-center gap-3 cursor-pointer flex-1 min-w-0 font-semibold">
       <input
         type="checkbox"
-        class="size-4 accent-brand-primary"
+        class="custom-checkbox"
         [checked]="task().status === 'Done'"
         (change)="onToggle.emit(task())"
       />

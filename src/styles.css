@@ -68,6 +68,26 @@
   .custom-scrollbar::-webkit-scrollbar-thumb {
     @apply bg-brand-border rounded-sm;
   }
+
+  .custom-checkbox {
+    @apply appearance-none size-4 bg-brand-dark border border-brand-border rounded cursor-pointer shrink-0 transition-all;
+  }
+
+  .custom-checkbox:checked {
+    @apply bg-brand-primary border-brand-primary;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .custom-checkbox:hover:not(:checked) {
+    @apply border-brand-muted;
+  }
+
+  .custom-checkbox:hover:checked {
+    @apply bg-brand-primary-hover;
+  }
 }
 
 @theme {
