@@ -1,18 +1,24 @@
 <main class="bg-brand-dark min-h-screen flex flex-col items-center justify-center">
   <h1 class="text-9xl font-bold select-none">TODO</h1>
   <div class="w-full max-w-md">
-    <header class="flex justify-around mt-1 bg-brand-surface border-brand-border border-t border-x rounded-t-2xl">
+    <header class="flex justify-around mt-1 bg-brand-dark rounded-t-2xl">
       <button type="button"
         [class.active]="currentForm() === 'login'"
         (click)="showLoginForm()"
-        class="flex-1 py-3 transition-all"
+        class="flex-1 py-3 border-l border-t border-brand-border rounded-tl-2xl transition-all"
+        [class]="currentForm() === 'login'
+          ? 'text-brand-text bg-brand-surface'
+          : 'bg-brand-dark text-brand-muted hover:text-brand-text hover:bg-brand-dark/30'"
         >
         Login
       </button>
       <button type="button"
         [class.active]="currentForm() === 'register'"
         (click)="showRegisterForm()"
-        class="flex-1 py-3 transition-all"
+        class="flex-1 py-3 border-x border-t border-brand-border rounded-tr-2xl transition-all"
+        [class]="currentForm() === 'login'
+          ? 'bg-brand-dark text-brand-muted hover:text-brand-text hover:bg-brand-dark/30'
+          : 'text-brand-text bg-brand-surface'"
         >
         Register
       </button>
