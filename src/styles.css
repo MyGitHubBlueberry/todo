@@ -27,6 +27,14 @@
     @apply w-full bg-brand-primary hover:bg-brand-primary-hover disabled:bg-brand-border disabled:text-brand-muted font-semibold text-base md:text-lg py-2 md:py-3 rounded-lg shadow transition-all active:scale-95;
   }
 
+  .btn-secondary {
+    @apply border-2 border-brand-border rounded-md text-brand-border font-semibold hover:text-brand-muted hover:border-brand-muted
+   transition-all;
+  }
+
+  /* .btn-danger { */
+  /* } */
+
   .form-input.ng-invalid.ng-touched {
     @apply border-brand-danger focus:ring-brand-danger text-brand-danger;
   }
