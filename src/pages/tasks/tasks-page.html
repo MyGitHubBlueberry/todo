@@ -1,36 +1,41 @@
-<main class="tasks-container">
-  <header>
-    <h2>My Tasks</h2>
-
-    <app-task-filter-bar
-      [categories]="categories()"
-      [(selectedCategoryIds)]="selectedCategoryIds"
-      [(selectedStatus)]="selectedStatus"
-      [(sortBy)]="sortBy"
-      (sortByChange)="sortTaskPage()"
-      (showCreateCategoryForm)="isCreateCategoryMenuOpen.set(true)";
-      (showDeleteCategoryForm)="isDeleteCategoryMenuOpen.set(true)";
-      (onSearch)="searchTerm.set($event); fetchTasks()"
-    />
+<main class="min-h-screen p-4 md:p-8 flex flex-col items-center">
+  <header class="flex items-center justify-between">
+  <h2 class="text-3xl font-bold text-brand-text mr-2">My Tasks</h2>
+    <button
+      (click)="logout()"
+      class="text-brand-muted hover:text-brand-text text-sm transition-colors"
+      >
+      LOGOUT ICON
+    </button>
   </header>
 
-  @if (isLoading()) {
-    <p class="loading">Loading your tasks...</p>
-  }
+  <app-task-filter-bar
+    class="container p-4 shadow-sm"
+    [categories]="categories()"
+    [(selectedCategoryIds)]="selectedCategoryIds"
+    [(selectedStatus)]="selectedStatus"
+    [(sortBy)]="sortBy"
+    (sortByChange)="sortTaskPage()"
+    (showCreateCategoryForm)="isCreateCategoryMenuOpen.set(true)";
+    (showDeleteCategoryForm)="isDeleteCategoryMenuOpen.set(true)";
+    (onSearch)="searchTerm.set($event); fetchTasks()"
+  />
 
-  <ul class="task-list">
-    @for (task of tasks() | slice:0:pageSize(); track task.id) {
-      <app-task-card
-        [task]="task"
-        (onToggle)="toggleTask($event)"
-        (onEdit)="openTaskEditMenu($event)"
-      />
-    } @empty {
-      @if (!isLoading()) {
-        <p class="empty-state">No tasks found.</p>
+  @if (isLoading()) {
+    <p class="text-brand-muted text-center py-10">Loading your tasks...</p>
+  } @else {
+    <ul class="container flex flex-col space-y-3 my-3">
+      @for (task of tasks() | slice:0:pageSize(); track task.id) {
+        <app-task-card
+          [task]="task"
+          (onToggle)="toggleTask($event)"
+          (onEdit)="openTaskEditMenu($event)"
+        />
+      } @empty {
+        <p class="text-brand-muted text-center py-10">No tasks found. Create a new one!</p>
       }
-    }
-  </ul>
+    </ul>
+  }
 
   <app-task-pagination
     [currentPage]="currentPage()"
@@ -41,7 +46,12 @@
     (onPrevious)="previousPage()"
   />
 
-  <button (click)="openTaskCreateMenu()">+</button>
+  <button
+      (click)="openTaskCreateMenu()"
+      class="fixed bottom-8 right-8 bg-brand-primary hover:bg-brand-primary-hover text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-3xl transition-all active:scale-95"
+    >
+    +
+  </button>
 
   @if (isCreateMenuOpen()) {
     <app-task-form
@@ -116,5 +126,4 @@
        <p>This action is permanent and cannot be undone. Do you want to proceed?</p>
     </app-modal-layout>
   }
-  <button (click)="logout()">logout</button>
 </main>

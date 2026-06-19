@@ -4,9 +4,11 @@
   * {
     color: var(--color-brand-text);
   }
+
   body {
     background-color: var(--color-brand-dark);
   }
+
   button {
     cursor: pointer;
   }
@@ -32,6 +34,18 @@
   .form-validation-error {
     @apply text-brand-danger font-semibold text-xs md:text-sm mt-1 block;
   }
+
+  .modal-overlay {
+    @apply fixed inset-0 bg-brand-dark/80 backdrop-blur-sm flex items-center justify-center p-4 z-50;
+  }
+
+  .container {
+    @apply bg-brand-surface border border-brand-border rounded-xl p-4;
+  }
+
+  .modal-container {
+    @apply bg-brand-surface border border-brand-border rounded-2xl p-6 w-full max-w-lg shadow-md;
+  }
 }
 
 @theme {
@@ -44,4 +58,3 @@
   --color-brand-text: #f8fafc;
   --color-brand-muted: #94a3b8;
 }
-
