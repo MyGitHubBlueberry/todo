@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 @Injectable({ providedIn: 'root' })
 export class CategoryApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:5000/api/categories';
+  private readonly baseUrl = import.meta.env.NG_APP_API_URL + '/categories';
 
   public create(dto: CategoryCreateDto): Observable<CategoryResponseDto> {
     return this.http.post<CategoryResponseDto>(this.baseUrl, dto);

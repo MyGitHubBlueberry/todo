@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 @Injectable({ providedIn: 'root' })
 export class SessionApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:5000/api/auth';
+  private readonly baseUrl = import.meta.env.NG_APP_API_URL + '/auth';
 
   public login(dto: LoginDto): Observable<TokensDto> {
     return this.http.post<TokensDto>(`${this.baseUrl}/login`, dto);

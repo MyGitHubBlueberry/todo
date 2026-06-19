@@ -6,7 +6,7 @@ import { TaskCreateDto, TaskGetQueryDto, TaskPaginatedResponseDto, TaskResponseD
 @Injectable({ providedIn: 'root' })
 export class TaskApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:5000/api/tasks';
+  private readonly baseUrl = import.meta.env.NG_APP_API_URL + '/tasks';
 
   public create(dto: TaskCreateDto): Observable<TaskResponseDto> {
     return this.http.post<TaskResponseDto>(this.baseUrl, dto);

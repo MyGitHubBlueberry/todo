@@ -4,7 +4,7 @@
 ## Todo plan
  - [x] add ability to add categories
  - [x] fetch categories
- - [ ] add category deletion
+ - [x] add category deletion
    - add route for deletion of multiple categories
  - [x] add sorting and reverse sorting options
    - alphabetically
