@@ -55,6 +55,19 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  .custom-scrollbar {
+    scrollbar-color: var(--color-brand-border) transparent;
+    scrollbar-width: thin;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    background-color: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-brand-border rounded-sm;
+  }
 }
 
 @theme {

@@ -16,25 +16,27 @@
     [(selectedStatus)]="selectedStatus"
     [(sortBy)]="sortBy"
     (sortByChange)="sortTaskPage()"
-    (showCreateCategoryForm)="isCreateCategoryMenuOpen.set(true)";
-    (showDeleteCategoryForm)="isDeleteCategoryMenuOpen.set(true)";
+    (showCreateCategoryForm)="isCreateCategoryMenuOpen.set(true)"
+    (showDeleteCategoryForm)="isDeleteCategoryMenuOpen.set(true)"
     (onSearch)="searchTerm.set($event); fetchTasks()"
   />
 
   @if (isLoading()) {
     <p class="text-brand-muted text-center py-10">Loading your tasks...</p>
   } @else {
-    <ul class="container flex flex-col space-y-3 my-3">
-      @for (task of tasks() | slice:0:pageSize(); track task.id) {
-        <app-task-card
-          [task]="task"
-          (onToggle)="toggleTask($event)"
-          (onEdit)="openTaskEditMenu($event)"
-        />
-      } @empty {
-        <p class="text-brand-muted text-center py-10">No tasks found. Create a new one!</p>
-      }
-    </ul>
+    <div class="container pr-2 my-3 ">
+      <ul class="flex flex-col space-y-3 max-h-[75vh] overflow-y-auto custom-scrollbar">
+        @for (task of tasks() | slice:0:pageSize(); track task.id) {
+          <app-task-card
+            [task]="task"
+            (onToggle)="toggleTask($event)"
+            (onEdit)="openTaskEditMenu($event)"
+          />
+        } @empty {
+          <p class="text-brand-muted text-center py-10">No tasks found. Create a new one!</p>
+        }
+      </ul>
+    </div>
   }
 
   <app-task-pagination
