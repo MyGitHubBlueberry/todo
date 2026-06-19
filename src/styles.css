@@ -1,3 +1,48 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+@layer base {
+  * {
+    color: var(--color-brand-text);
+  }
+  button {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .form-row-label {
+    @apply flex items-center space-x-4 w-full cursor-pointer mt-4;
+  }
+
+  .form-label-text {
+    @apply text-brand-muted text-sm font-medium whitespace-nowrap w-32;
+  }
+
+  .form-input {
+    @apply flex-1 px-2 bg-brand-dark border border-brand-border rounded-md focus:ring-1 focus:ring-brand-primary focus:outline-none transition-all;
+  }
+
+  .btn-primary {
+    @apply w-full bg-brand-primary hover:bg-brand-primary-hover disabled:bg-brand-border disabled:text-brand-muted font-semibold py-2 rounded-lg shadow transition-all active:scale-95;
+  }
+
+  .form-input.ng-invalid.ng-touched {
+    @apply border-brand-danger focus:ring-brand-danger text-brand-danger;
+  }
+
+  .form-validation-error {
+    @apply text-brand-danger font-semibold text-xs ml-[9rem] block;
+  }
+}
+
+@theme {
+  --color-brand-dark: #1e1e2f;
+  --color-brand-surface: #2a2a40;
+  --color-brand-border: #3b3b54;
+  --color-brand-primary: #a26844;
+  --color-brand-primary-hover: #8a5433;
+  --color-brand-danger: #703127;
+  --color-brand-text: #f8fafc;
+  --color-brand-muted: #94a3b8;
+}
+

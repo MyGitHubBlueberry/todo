@@ -3,7 +3,7 @@
   && (loginForm.get('login')?.dirty || loginForm.get('login')?.touched)) {
   <div login-errors class="error-container">
     @if (loginForm.get('login')?.hasError('required')) {
-    <span class="error-text">Username is required.</span>
+      <span class="form-validation-error">Username is required.</span>
     }
   </div>
   }
@@ -12,7 +12,7 @@
   && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)) {
   <div password-errors class="error-container">
     @if (loginForm.get('password')?.hasError('required')) {
-    <span class="error-text">Password is required.</span>
+      <span class="form-validation-error">Password is required.</span>
     }
   </div>
   }
