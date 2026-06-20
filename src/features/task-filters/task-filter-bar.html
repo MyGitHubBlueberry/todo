@@ -1,38 +1,74 @@
-<details class="categories">
-  <summary>Categories</summary>
-  @if (categories().length === 0) {
-    <p>You haven't created any categories yet.</p>
-  }
-  @for (category of categories(); track category.id) {
-    <div class="category-filter">
-      <label>
-        {{ category.name }}
-        <input
-          type="checkbox"
-          [value]="category.id"
-          [checked]="selectedCategoryIds().includes(category.id)"
-          (change)="onCheckboxChange(category.id, $event)"
+<details>
+  <summary class="text-base md:text-lg cursor-pointer font-semibold mb-2 text-brand-muted">Categories</summary>
+  <div class="flex gap-2 mb-2 bg-brand-dark border border-brand-border rounded-xl p-2 custom-scrollbar overflow-y-auto h-min">
+    @if (categories().length === 0) {
+      <p class="text-brand-muted text-sm mb-3">You haven't created any categories yet.</p>
+    } @else {
+      @for (category of categories(); track category.id) {
+        <label
+          class="flex items-center gap-2 px-3 py-1.5 border border-brand-border rounded-xl cursor-pointer hover:bg-brand-surface transition-colors group"
+          [class.bg-brand-primary]="selectedCategoryIds().includes(category.id)"
+          [class.border-brand-primary]="selectedCategoryIds().includes(category.id)"
         >
-      </label>
-    </div>
-  }
-  <button type="button" (click)="selectedCategoryIds.update(() => [])">Clear</button>
-  <button type="button" (click)="showCreateCategoryForm.emit()">Create</button>
-  <button type="button" (click)="showDeleteCategoryForm.emit()">Delete</button>
+
+          <input
+            type="checkbox"
+            class="custom-checkbox"
+            [checked]="selectedCategoryIds().includes(category.id)"
+            (change)="onCheckboxChange(category.id, $event)"
+          >
+
+          <span
+            class="text-sm transition-colors"
+            [class.text-brand-muted]="!selectedCategoryIds().includes(category.id)"
+            [class.text-white]="selectedCategoryIds().includes(category.id)"
+            [class.group-hover:text-brand-text]="!selectedCategoryIds().includes(category.id)"
+          >
+            {{ category.name }}
+          </span>
+
+        </label>
+      }
+    }
+  </div>
+
+  <div class="flex gap-2 mb-2">
+    <button
+      type="button"
+      class="btn-secondary py-1 px-3 text-sm"
+      (click)="selectedCategoryIds.update(() => [])"
+    >
+      Clear
+    </button>
+    <button
+      type="button"
+      class="btn-secondary py-1 px-3 text-sm"
+      (click)="showDeleteCategoryForm.emit()"
+    >
+      Delete
+    </button>
+    <button
+      type="button"
+      class="btn-secondary py-1 px-3 text-sm"
+      (click)="showCreateCategoryForm.emit()"
+    >
+      Create
+    </button>
+  </div>
 </details>
-<div class="search-controls">
-  <label for="filters">
+<div class="flex gap-2 mb-2">
+  <label class="font-semibold">
     Filters
-    <select id="filters" class="search-filters" [(ngModel)]="selectedStatus">
+    <select class="search-filters font-medium" [(ngModel)]="selectedStatus">
       <option [ngValue]="null" class="search-filter">All</option>
       <option value="Done" class="search-filter">Done</option>
       <option value="Pending" class="search-filter">Pending</option>
     </select>
   </label>
 
-  <label for="sort">
+  <label class="font-semibold">
     Sort
-    <select id="sort" class="sort-filters" [(ngModel)]="sortBy">
+    <select class="sort-filters font-medium" [(ngModel)]="sortBy">
       <option value="AlphAsc" class="sort-filter">Alphabetically</option>
       <option value="AlphDsc" class="sort-filter">Alphabetically Reversed</option>
       <option value="CrtDsc" class="sort-filter">By Created Date New First</option>
@@ -41,8 +77,10 @@
       <option value="UpdAsc" class="sort-filter">By Updated Date Old First</option>
     </select>
   </label>
+</div>
 
+<div class="flex gap-2">
   <input type="text" placeholder="Search tasks..." #searchInput (keyup.enter)="onSearch.emit(searchInput.value)" />
 
-  <button (click)="onSearch.emit(searchInput.value)">Search</button>
+  <button (click)="onSearch.emit(searchInput.value)" class="btn-primary w-auto px-2 py-1">Search</button>
 </div>

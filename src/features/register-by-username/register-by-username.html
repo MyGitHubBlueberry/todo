@@ -31,7 +31,7 @@
 
   <label class="form-label">
     Confirm Password:
-    <input type="password" formControlName="confirmPassword" class="form-input" />
+    <input type="password" formControlName="confirmPassword" class="w-full" />
   </label>
 
   @if ((registerForm.get('confirmPassword')?.invalid && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)) || (registerForm.hasError('passwordMismatch') && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched))) {

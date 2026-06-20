@@ -1,13 +1,13 @@
 <form [formGroup]="formGroup()" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
   <label class="form-label">
     Login:
-    <input type="text" formControlName="login" class="form-input" />
+    <input type="text" formControlName="login" class="w-full" />
   </label>
   <ng-content select="[login-errors]" />
 
   <label class="form-label">
     Password:
-    <input type="password" formControlName="password" class="form-input" />
+    <input type="password" formControlName="password" class="w-full" />
   </label>
   <ng-content select="[password-errors]" />
 
