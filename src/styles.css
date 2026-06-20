@@ -11,6 +11,7 @@
 
   button {
     cursor: pointer;
+    @apply transition-all enabled:active:scale-95;
   }
 }
 
@@ -24,16 +25,17 @@
   }
 
   .btn-primary {
-    @apply w-full bg-brand-primary hover:bg-brand-primary-hover disabled:bg-brand-border disabled:text-brand-muted font-semibold text-base md:text-lg py-2 md:py-3 rounded-lg shadow transition-all active:scale-95;
+    @apply w-full bg-brand-primary hover:bg-brand-primary-hover disabled:bg-brand-border disabled:text-brand-muted font-semibold text-base md:text-lg py-2 md:py-3 rounded-lg shadow;
   }
 
   .btn-secondary {
-    @apply border-2 border-brand-border rounded-md text-brand-border font-semibold hover:text-brand-muted hover:border-brand-muted
-   transition-all;
+    @apply border-2 border-brand-border rounded-lg text-brand-border font-semibold hover:text-brand-muted hover:border-brand-muted;
   }
 
   .btn-danger {
-    @apply p-3 bg-brand-danger/30 border border-brand-danger rounded-lg text-center font-semibold;
+    @apply p-3 bg-brand-danger/30 border border-brand-danger rounded-lg text-center font-semibold
+         enabled:hover:bg-brand-danger/50
+         disabled:border-2 disabled:border-brand-border disabled:bg-transparent disabled:text-brand-border;
   }
 
   .form-input.ng-invalid.ng-touched {
