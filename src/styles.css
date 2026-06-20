@@ -20,7 +20,7 @@
   }
 
   .form-input {
-    @apply w-full text-base md:text-lg bg-brand-dark border border-brand-border rounded-md focus:ring-1 focus:ring-brand-primary focus:outline-none transition-all;
+    @apply w-full px-1 text-base md:text-lg bg-brand-dark border border-brand-border rounded-md focus:ring-1 focus:ring-brand-primary focus:outline-none transition-all;
   }
 
   .btn-primary {

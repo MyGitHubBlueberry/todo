@@ -6,20 +6,38 @@ import { CategoryResponseDto } from "@entities/category/api/types";
   selector: 'app-task-categories',
   imports: [FormsModule],
   template: `
-      <select
-        multiple
-        class="search-categories"
-        [(ngModel)]="selectedCategoryIds"
-      >
-        @for (category of categories(); track category.id) {
-          <option [ngValue]="category.id" class="search-category">
+    <div class="flex flex-col border border-brand-border rounded-md bg-brand-dark h-min max-h-40 overflow-y-auto custom-scrollbar">
+      @for (category of categories(); track category.id) {
+        <label class="flex items-center px-3 py-2 cursor-pointer hover:bg-brand-surface transition-colors group">
+          <input
+            type="checkbox"
+            class="custom-checkbox mr-3"
+            [checked]="selectedCategoryIds().includes(category.id)"
+            (change)="toggleCategory(category.id)"
+          />
+          <span class="text-brand-text group-hover:text-white transition-colors">
             {{ category.name }}
-          </option>
-        }
-      </select>
+          </span>
+        </label>
+      }
+
+      @empty {
+        <p class="text-brand-muted text-sm text-center py-4">No categories available.</p>
+      }
+    </div>
   `
 })
 export class TaskCategoriesComponent {
-  public categories = input.required<CategoryResponseDto[]>();
-  public selectedCategoryIds = model<number[]>([]);
+  public readonly categories = input.required<CategoryResponseDto[]>();
+  public readonly selectedCategoryIds = model<number[]>([]);
+
+  protected toggleCategory(categoryId: number): void {
+    const currentIds = this.selectedCategoryIds();
+
+    if (currentIds.includes(categoryId)) {
+      this.selectedCategoryIds.set(currentIds.filter(id => id !== categoryId));
+    } else {
+      this.selectedCategoryIds.set([...currentIds, categoryId]);
+    }
+  }
 }

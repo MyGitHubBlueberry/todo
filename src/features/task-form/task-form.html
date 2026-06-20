@@ -5,8 +5,8 @@
   (onClose)="onClose.emit()"
   (onSave)="submitForm()"
 >
-  <form #taskForm="ngForm" class="task-form-layout">
-    <label for="task-title">
+  <form #taskForm="ngForm" class="flex flex-col space-y-4 my-4">
+    <label class="form-label">
       Title
       <input
         id="task-title"
@@ -15,25 +15,39 @@
         maxlength="25"
         required
         [(ngModel)]="formData.title"
+        #titleInput="ngModel"
+        class="form-input"
       >
     </label>
 
-    <app-task-categories
-      name="categoryIds"
-      [categories]="categories()"
-      [(selectedCategoryIds)]="selectedCategoryIds"
-    />
+    @if (titleInput.invalid && (titleInput.dirty || titleInput.touched)) {
+      @if (titleInput.errors?.['required']) {
+        <p class="form-validation-error">A title is required.</p>
+      }
+      @if (titleInput.errors?.['maxlength']) {
+        <p class="form-validation-error">Title cannot be longer than 25 characters.</p>
+      }
+    }
 
-    <label for="task-body">
+    <label class="form-label">
       Description
-      <input
-        id="task-body"
+      <textarea
         name="body"
-        type="text"
         [(ngModel)]="formData.body"
+        rows="5"
+        class="form-input custom-scrollbar"
       >
+      </textarea>
     </label>
 
+    <label class="form-label">
+      Categories
+      <app-task-categories
+        name="categoryIds"
+        [categories]="categories()"
+        [(selectedCategoryIds)]="selectedCategoryIds"
+      />
+    </label>
   </form>
 
   @if (isEditMode) {
