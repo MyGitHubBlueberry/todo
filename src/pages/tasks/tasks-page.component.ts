@@ -147,15 +147,25 @@ export class TaskPageComponent implements OnInit {
   protected updateTask(id: number, dto: TaskUpdateDto) {
     const previousTasks = this.tasks();
 
+    const updatedCategories = this.categories().filter(c =>
+      dto.categoryIds.includes(c.id)
+    );
+
     this.tasks.update(currentTasks =>
-      currentTasks.map(t => t.id === id ? { ...t, ...dto } : t)
+      currentTasks.map(t =>
+        t.id === id
+          ? { ...t, ...dto, categories: updatedCategories }
+          : t
+      )
     );
 
     this.closeMenus();
 
     this.taskApi.put(id, dto).subscribe({
+      next: (updatedTaskFromServer) => {
+        this.tasks.update(tasks => tasks.map(t => t.id === id ? updatedTaskFromServer : t));
+      },
       error: (err) => {
-        //todo: show it as popup message
         console.error('Failed to update task', err);
         this.tasks.set(previousTasks);
       }
