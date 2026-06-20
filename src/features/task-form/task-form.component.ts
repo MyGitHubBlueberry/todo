@@ -1,4 +1,4 @@
-import { Component, input, output, OnInit, model } from "@angular/core";
+import { Component, input, output, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { CategoryResponseDto } from "@entities/category/api/types";
 import { TaskCreateDto, TaskResponseDto, TaskUpdateDto } from "@entities/task/api/types";
@@ -13,8 +13,7 @@ import { ModalLayoutComponent } from "@shared/ui/window-layout/modal-layout.comp
 export class TaskFormComponent implements OnInit {
   public readonly inputTask = input<TaskResponseDto | null>(null);
   public readonly categories = input.required<CategoryResponseDto[]>();
-  public readonly selectedCategoryIds: number[] =
-    this.inputTask()?.categories.map(c => c.id) ?? [];
+  public selectedCategoryIds: number[] = [];
 
   public readonly onClose = output<void>();
   public readonly onCreate = output<TaskCreateDto>();
@@ -29,14 +28,17 @@ export class TaskFormComponent implements OnInit {
     this.isEditMode = currentTask !== null;
 
     if (currentTask) {
+      this.selectedCategoryIds = currentTask.categories
+          ? currentTask.categories.map(c => c.id)
+          : [];
+
       this.formData = {
         title: currentTask.title,
         body: currentTask.body,
-        categoryIds: currentTask.categories
-          ? currentTask.categories.map(c => c.id)
-          : [],
+        categoryIds: this.selectedCategoryIds
       };
     } else {
+      this.selectedCategoryIds = [];
       this.formData = {
         title: '',
         body: '',
@@ -47,6 +49,7 @@ export class TaskFormComponent implements OnInit {
 
   protected submitForm() {
     this.formData.categoryIds = this.selectedCategoryIds;
+
     if (this.isEditMode) {
       this.onUpdate.emit(this.formData);
     } else {
