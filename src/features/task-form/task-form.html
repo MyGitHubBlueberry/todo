@@ -1,9 +1,6 @@
 <app-modal-layout
   [title]="isEditMode ? 'Edit Task' : 'Create New Task'"
-  [button]="isEditMode ? 'Save Changes' : 'Create Task'"
-  [isButtonDisabled]="taskForm.invalid ?? false"
   (onClose)="onClose.emit()"
-  (onSave)="submitForm()"
 >
   <form #taskForm="ngForm" class="flex flex-col space-y-4 my-4">
     <label class="form-label">
@@ -50,12 +47,28 @@
     </label>
   </form>
 
-  @if (isEditMode) {
+
+  <div
+    modal-footer
+    class="grid gap-3 w-full"
+    [class.grid-cols-2]="isEditMode"
+  >
+    @if (isEditMode) {
+      <button
+        type="button"
+        (click)="onDelete.emit()"
+        class="btn-danger w-full"
+      >
+        Delete Task
+      </button>
+    }
+
     <button
-      type="button"
-      (click)="onDelete.emit()"
+      [disabled]="taskForm.invalid ?? false"
+      (click)="submitForm()"
+      class="btn-primary w-full"
     >
-      Delete Task
+      {{ isEditMode ? 'Save Changes' : 'Create Task' }}
     </button>
-  }
+  </div>
 </app-modal-layout>

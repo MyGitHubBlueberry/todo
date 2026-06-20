@@ -32,8 +32,9 @@
    transition-all;
   }
 
-  /* .btn-danger { */
-  /* } */
+  .btn-danger {
+    @apply p-3 bg-brand-danger/30 border border-brand-danger rounded-lg text-center font-semibold;
+  }
 
   .form-input.ng-invalid.ng-touched {
     @apply border-brand-danger focus:ring-brand-danger text-brand-danger;
