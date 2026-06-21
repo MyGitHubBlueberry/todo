@@ -7,6 +7,9 @@ import { SessionService } from "@entities/session/model/session.service";
 import { TaskApiService } from "@entities/task/api/task-api.service";
 import { TaskResponseDto, TaskGetQueryDto, TaskStatus, TaskUpdateDto, TaskCreateDto, SortBy } from "@entities/task/api/types";
 import { TaskCardComponent } from "@entities/task/ui/task-card";
+import { CreateTaskCategoryComponent } from "@features/create-task-category/create-task-category.component";
+import { DeleteTaskCategoriesComponent } from "@features/delete-task-categories/delete-task-categories.component";
+import { DeleteTaskConfirmationComponent } from "@features/delete-task-confirmation/delete-task-confirmation.components";
 import { TaskCategoriesComponent } from "@features/task-categories/task-categories.component";
 import { TaskFilterBarComponent } from "@features/task-filters/task-filter-bar.component";
 import { TaskFormComponent } from "@features/task-form/task-form.component";
@@ -22,10 +25,12 @@ import { filter } from "rxjs";
     SlicePipe,
     TaskFilterBarComponent,
     TaskPaginationComponent,
-    TaskCategoriesComponent,
     TaskCardComponent,
     TaskFormComponent,
-    ModalLayoutComponent
+    ModalLayoutComponent,
+    DeleteTaskCategoriesComponent,
+    DeleteTaskConfirmationComponent,
+    CreateTaskCategoryComponent,
   ],
 })
 export class TaskPageComponent implements OnInit {
@@ -207,11 +212,9 @@ export class TaskPageComponent implements OnInit {
     });
   }
 
-  protected deleteCategories() {
+  protected deleteCategories(ids: number[]) {
     this.closeMenus();
-    const ids = this.categoriesToDeleteById();
     this.categories.update(list => list.filter(c => !ids.includes(c.id)));
-    this.categoriesToDeleteById.set([]);
     this.categoryApi.delete(ids).subscribe({
       error: (err) => {
         console.error("Failed to delete category", err);

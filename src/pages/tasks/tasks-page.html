@@ -89,109 +89,25 @@
   }
 
   @if (taskToDelete(); as task) {
-    <app-modal-layout
-      title="Delete Task"
+    <app-delete-task-confirmation
+      [task]="task"
       (onClose)="taskToDelete.set(null)"
-    >
-      <div class="delete-warning">
-        <p>Are you sure you want to permanently delete <strong>{{ task.title }}</strong>?</p>
-        <p>This action cannot be undone.</p>
-      </div>
-      <div
-        modal-footer
-        class="flex gap-3"
-      >
-        <button
-          class="btn-secondary flex-1"
-          (click)="taskToDelete.set(null)"
-        >
-          Cancel
-        </button>
-        <button
-          class="btn-danger flex-1"
-          (click)="deleteTask(task.id)"
-        >
-          Delete
-        </button>
-      </div>
-    </app-modal-layout>
+      (onConfirmDelete)="deleteTask($event)"
+    />
   }
 
   @if (isCreateCategoryMenuOpen()) {
-    <app-modal-layout
-      title="Create Task Category"
+    <app-create-task-category
       (onClose)="isCreateCategoryMenuOpen.set(false)"
-      >
-      <label>
-        Name
-        <input type="text" #categoryName (input)="0"/>
-      </label>
-      <button
-        modal-footer
-        class="btn-primary"
-        [disabled]="!categoryName.value || categoryName.value.trim() === ''"
-        (click)="createCategory(categoryName.value)"
-      >
-        Create
-      </button>
-    </app-modal-layout>
+      (onCreate)="createCategory($event)"
+    />
   }
 
   @if (isDeleteCategoryMenuOpen()) {
-    <app-modal-layout
-      title="Delete Task Categories"
+    <app-delete-task-categories
+      [categories]="categories()"
       (onClose)="isDeleteCategoryMenuOpen.set(false)"
-      >
-        <app-task-categories
-          [categories]="categories()"
-          [(selectedCategoryIds)]="categoriesToDeleteById"
-        />
-      <div
-        modal-footer
-        class="flex gap-3"
-      >
-        <button
-          class="btn-secondary flex-1"
-          (click)="isDeleteCategoryMenuOpen.set(false)"
-        >
-          Cancel
-        </button>
-        <button
-          class="btn-danger flex-1"
-          [disabled]="categoriesToDeleteById().length === 0"
-          (click)="isDeleteCategoryConfirmationMenuOpen.set(true);"
-        >
-          Delete
-        </button>
-      </div>
-    </app-modal-layout>
-  }
-
-  @if (isDeleteCategoryConfirmationMenuOpen()) {
-    <app-modal-layout
-      title="Delete Selected Categories"
-      button="Delete"
-      (onClose)="isDeleteCategoryConfirmationMenuOpen.set(false)"
-      >
-       <p>This action is permanent and cannot be undone. Do you want to proceed?</p>
-
-      <div
-        modal-footer
-        class="flex gap-3"
-      >
-        <button
-          class="btn-secondary flex-1"
-          (click)="isDeleteCategoryConfirmationMenuOpen.set(false)"
-        >
-          Cancel
-        </button>
-        <button
-          class="btn-danger flex-1"
-          (click)="deleteCategories()"
-        >
-          Delete
-        </button>
-      </div>
-    </app-modal-layout>
+      (onDeleteConfirmed)="deleteCategories($event)"
+    />
   }
 </main>

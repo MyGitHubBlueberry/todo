@@ -1,0 +1,52 @@
+<app-modal-layout
+  title="Delete Task Categories"
+  (onClose)="onClose.emit()"
+  >
+  <app-task-categories
+    [categories]="categories()"
+    [(selectedCategoryIds)]="categoriesToDeleteById"
+  />
+  <div modal-footer class="flex gap-3" >
+    <button
+      class="btn-secondary flex-1"
+      (click)="onClose.emit()"
+    >
+      Cancel
+    </button>
+    <button
+      class="btn-danger flex-1"
+      [disabled]="categoriesToDeleteById.length === 0"
+      (click)="isDeleteCategoryConfirmationMenuOpen = true"
+    >
+      Delete
+    </button>
+  </div>
+</app-modal-layout>
+
+@if (isDeleteCategoryConfirmationMenuOpen) {
+  <app-modal-layout
+    title="Delete Selected Categories"
+    button="Delete"
+    (onClose)="isDeleteCategoryConfirmationMenuOpen = false"
+    >
+     <p>This action is permanent and cannot be undone. Do you want to proceed?</p>
+
+    <div
+      modal-footer
+      class="flex gap-3"
+    >
+      <button
+        class="btn-secondary flex-1"
+        (click)="isDeleteCategoryConfirmationMenuOpen = false"
+      >
+        Cancel
+      </button>
+      <button
+        class="btn-danger flex-1"
+        (click)="onDeleteConfirmed.emit(categoriesToDeleteById)"
+      >
+        Delete
+      </button>
+    </div>
+  </app-modal-layout>
+}
