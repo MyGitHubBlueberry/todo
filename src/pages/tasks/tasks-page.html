@@ -1,6 +1,6 @@
 <main class="h-screen w-full overflow-hidden p-4 md:p-8 flex flex-col items-center">
-  <header class="flex items-center justify-between">
-  <h2 class="text-3xl font-bold text-brand-text mr-2">My Tasks</h2>
+  <header class="flex items-center justify-between mb-4">
+    <h2 class="text-3xl font-bold text-brand-text mr-2">My Tasks</h2>
     <button
       (click)="logout()"
       class="text-brand-muted hover:text-brand-text text-sm transition-colors"
@@ -36,23 +36,23 @@
     (onSearch)="searchTerm.set($event); fetchTasks()"
   />
 
-  @if (isLoading()) {
-    <p class="text-brand-muted text-center py-10">Loading your tasks...</p>
-  } @else {
-    <div class="container pr-2 my-3 w-full flex-1 min-h-0 flex flex-col">
+  <div class="container pr-2 my-3 w-full flex-1 min-h-0 flex flex-col">
+    @if (isLoading()) {
+      <p class="text-brand-muted text-center m-auto">Loading your tasks...</p>
+    } @else {
       <ul class="flex-1 flex flex-col space-y-3 overflow-y-auto custom-scrollbar">
         @for (task of tasks() | slice:0:pageSize(); track task.id) {
           <app-task-card
             [task]="task"
             (onToggle)="toggleTask($event)"
-            (onEdit)="taskToEdit.set($event)"
-          />
+              (onEdit)="taskToEdit.set($event)"
+              />
         } @empty {
-          <p class="text-brand-muted text-center py-10">No tasks found. Create a new one!</p>
+          <p class="text-brand-muted text-center m-auto">No tasks found. Create a new one!</p>
         }
       </ul>
-    </div>
-  }
+    }
+  </div>
 
   <app-task-pagination
     [currentPage]="currentPage()"

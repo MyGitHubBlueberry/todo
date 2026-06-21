@@ -56,8 +56,9 @@
     </button>
   </div>
 </details>
-<div class="flex gap-2 mb-2">
-  <label class="font-semibold">
+<div class="flex flex-wrap items-center gap-2 mb-2">
+
+  <label class="flex items-center gap-2 font-semibold whitespace-nowrap">
     Filters
     <select class="search-filters font-medium" [(ngModel)]="selectedStatus">
       <option [ngValue]="null" class="search-filter">All</option>
@@ -66,7 +67,7 @@
     </select>
   </label>
 
-  <label class="font-semibold">
+  <label class="flex items-center gap-2 font-semibold whitespace-nowrap">
     Sort
     <select class="sort-filters font-medium" [(ngModel)]="sortBy">
       <option value="AlphAsc" class="sort-filter">Alphabetically</option>
@@ -77,10 +78,18 @@
       <option value="UpdAsc" class="sort-filter">By Updated Date Old First</option>
     </select>
   </label>
+
+  <div class="flex gap-2 whitespace-nowrap w-full lg:w-auto">
+    <input
+      type="text"
+      placeholder="Search tasks..."
+      #searchInput
+      (keyup.enter)="onSearch.emit(searchInput.value)"
+      class="w-full h-min m-auto"
+    />
+    <button (click)="onSearch.emit(searchInput.value)" class="btn-primary w-auto px-4 py-1">
+      Search
+    </button>
+  </div>
 </div>
 
-<div class="flex gap-2">
-  <input type="text" placeholder="Search tasks..." #searchInput (keyup.enter)="onSearch.emit(searchInput.value)" />
-
-  <button (click)="onSearch.emit(searchInput.value)" class="btn-primary w-auto px-2 py-1">Search</button>
-</div>

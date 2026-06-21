@@ -10,14 +10,11 @@ import { TaskCardComponent } from "@entities/task/ui/task-card";
 import { CreateTaskCategoryComponent } from "@features/create-task-category/create-task-category.component";
 import { DeleteTaskCategoriesComponent } from "@features/delete-task-categories/delete-task-categories.component";
 import { DeleteTaskConfirmationComponent } from "@features/delete-task-confirmation/delete-task-confirmation.components";
-import { TaskCategoriesComponent } from "@features/task-categories/task-categories.component";
 import { TaskFilterBarComponent } from "@features/task-filters/task-filter-bar.component";
 import { TaskFormComponent } from "@features/task-form/task-form.component";
 import { TaskPaginationComponent } from "@features/task-pagination/task-pagination.component";
 import { ToastComponent } from "@shared/ui/toast/toast.component";
 import { ToastService } from "@shared/ui/toast/toast.service";
-import { ModalLayoutComponent } from "@shared/ui/window-layout/modal-layout.component";
-import { filter } from "rxjs";
 
 @Component({
   selector: 'app-tasks-page',
@@ -29,7 +26,6 @@ import { filter } from "rxjs";
     TaskPaginationComponent,
     TaskCardComponent,
     TaskFormComponent,
-    ModalLayoutComponent,
     DeleteTaskCategoriesComponent,
     DeleteTaskConfirmationComponent,
     CreateTaskCategoryComponent,
