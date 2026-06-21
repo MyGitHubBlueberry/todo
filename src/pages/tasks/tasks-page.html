@@ -1,4 +1,4 @@
-<main class="min-h-screen p-4 md:p-8 flex flex-col items-center">
+<main class="h-screen w-full overflow-hidden p-4 md:p-8 flex flex-col items-center">
   <header class="flex items-center justify-between">
   <h2 class="text-3xl font-bold text-brand-text mr-2">My Tasks</h2>
     <button
@@ -39,8 +39,8 @@
   @if (isLoading()) {
     <p class="text-brand-muted text-center py-10">Loading your tasks...</p>
   } @else {
-    <div class="container pr-2 my-3 ">
-      <ul class="flex flex-col space-y-3 max-h-[75vh] overflow-y-auto custom-scrollbar">
+    <div class="container pr-2 my-3 w-full flex-1 min-h-0 flex flex-col">
+      <ul class="flex-1 flex flex-col space-y-3 overflow-y-auto custom-scrollbar">
         @for (task of tasks() | slice:0:pageSize(); track task.id) {
           <app-task-card
             [task]="task"
