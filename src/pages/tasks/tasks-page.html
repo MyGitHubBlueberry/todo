@@ -36,7 +36,7 @@
     (onSearch)="searchTerm.set($event); fetchTasks()"
   />
 
-  <div class="container pr-2 my-3 w-full flex-1 min-h-0 max-h-max flex flex-col">
+  <div class="container pr-2 my-3 w-full flex-1 min-h-0 flex flex-col">
     @if (isLoading()) {
       <p class="text-brand-muted text-center m-auto">Loading your tasks...</p>
     } @else {
@@ -55,6 +55,7 @@
   </div>
 
   <app-task-pagination
+    class="mt-auto w-full max-w-4xl p-2 z-10"
     [currentPage]="currentPage()"
     [pageSize]="pageSize()"
     [tasksCount]="tasks().length"

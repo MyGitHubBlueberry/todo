@@ -262,6 +262,7 @@ export class TaskPageComponent implements OnInit {
         this.isLoading.set(false);
         this.tasks.set(data.tasks);
         this.totalCount.set(data.totalCount);
+        this.currentPage.set(data.page);
       },
       error: () => {
         this.isLoading.set(false);

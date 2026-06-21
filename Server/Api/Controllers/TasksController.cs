@@ -85,12 +85,13 @@ public class TasksController(ILogger<TasksController> logger, ITaskService servi
         if (!User.TryGetUserId(out int userId))
             return Unauthorized(new { message = "Invalid token payload." });
 
-        var (tasks, totalCount) = await service
+        var (tasks, totalCount, page) = await service
             .GetTasksAsync(userId, dto);
 
         return Ok(new
         {
             tasks = tasks,
+            page = page,
             totalCount = totalCount
         });
     }

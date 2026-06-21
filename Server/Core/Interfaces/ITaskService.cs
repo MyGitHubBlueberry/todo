@@ -6,7 +6,8 @@ using Server.Core.Dtos.Task;
 
 public interface ITaskService
 {
-    Task<(IEnumerable<TaskResponseDto> Tasks, int TotalCount)> GetTasksAsync(
+
+    Task<(IEnumerable<TaskResponseDto> Tasks, int TotalCount, int Page)> GetTasksAsync(
         int userId, TaskGetQueryDto dto);
     Task<TaskResponseDto> CreateTaskAsync(int userId, TaskCreateDto taskDto);
     Task<TaskResponseDto?> GetTaskByIdAsync(int taskId, int userId);

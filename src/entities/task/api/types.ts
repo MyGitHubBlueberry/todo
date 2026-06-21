@@ -28,6 +28,7 @@ export interface TaskGetQueryDto {
 export interface TaskPaginatedResponseDto {
   tasks: TaskResponseDto[];
   totalCount: number;
+  page: number;
 }
 
 export type TaskStatus = 'Done' | 'Pending';

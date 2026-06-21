@@ -58,7 +58,7 @@ public class TaskService(AppDbContext db) : ITaskService
         return ToTaskResponseDto(task);
     }
 
-    public async Task<(IEnumerable<TaskResponseDto> Tasks, int TotalCount)>
+    public async Task<(IEnumerable<TaskResponseDto> Tasks, int TotalCount, int Page)>
         GetTasksAsync(int userId, TaskGetQueryDto dto)
     {
         var query = db.Tasks
@@ -108,7 +108,7 @@ public class TaskService(AppDbContext db) : ITaskService
             .Take(dto.pageSize)
             .ToListAsync();
 
-        return (dbTasks.Select(ToTaskResponseDto), totalCount);
+        return (dbTasks.Select(ToTaskResponseDto), totalCount, page);
     }
 
     public async Task<TaskResponseDto?> UpdateTaskAsync(int taskId, int userId, TaskUpdateDto taskDto)
