@@ -45,7 +45,7 @@
           <app-task-card
             [task]="task"
             (onToggle)="toggleTask($event)"
-            (onEdit)="openTaskEditMenu($event)"
+            (onEdit)="taskToEdit.set($event)"
           />
         } @empty {
           <p class="text-brand-muted text-center py-10">No tasks found. Create a new one!</p>
@@ -64,7 +64,7 @@
   />
 
   <button
-      (click)="openTaskCreateMenu()"
+      (click)="isCreateMenuOpen.set(true)"
       class="fixed bottom-8 right-8 bg-brand-primary hover:bg-brand-primary-hover text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-3xl transition-all active:scale-95"
     >
     +
@@ -73,7 +73,7 @@
   @if (isCreateMenuOpen()) {
     <app-task-form
       [categories]="categories()"
-      (onClose)="closeMenus()"
+      (onClose)="isCreateMenuOpen.set(false)"
       (onCreate)="createTask($event)"
     />
   }
@@ -82,16 +82,16 @@
     <app-task-form
       [inputTask]="task"
       [categories]="categories()"
-      (onClose)="closeMenus()"
+      (onClose)="taskToEdit.set(null)"
       (onUpdate)="updateTask(task.id, $event)"
-      (onDelete)="openTaskDeletionConfirmation(task)"
+      (onDelete)="taskToDelete.set(task)"
     />
   }
 
   @if (taskToDelete(); as task) {
     <app-modal-layout
       title="Delete Task"
-      (onClose)="closeMenus()"
+      (onClose)="taskToDelete.set(null)"
     >
       <div class="delete-warning">
         <p>Are you sure you want to permanently delete <strong>{{ task.title }}</strong>?</p>
@@ -103,7 +103,7 @@
       >
         <button
           class="btn-secondary flex-1"
-          (click)="closeMenus()"
+          (click)="taskToDelete.set(null)"
         >
           Cancel
         </button>
@@ -120,7 +120,7 @@
   @if (isCreateCategoryMenuOpen()) {
     <app-modal-layout
       title="Create Task Category"
-      (onClose)="closeMenus()"
+      (onClose)="isCreateCategoryMenuOpen.set(false)"
       >
       <label>
         Name
@@ -140,7 +140,7 @@
   @if (isDeleteCategoryMenuOpen()) {
     <app-modal-layout
       title="Delete Task Categories"
-      (onClose)="closeMenus()"
+      (onClose)="isDeleteCategoryMenuOpen.set(false)"
       >
         <app-task-categories
           [categories]="categories()"
@@ -152,7 +152,7 @@
       >
         <button
           class="btn-secondary flex-1"
-          (click)="closeMenus()"
+          (click)="isDeleteCategoryMenuOpen.set(false)"
         >
           Cancel
         </button>
@@ -171,7 +171,7 @@
     <app-modal-layout
       title="Delete Selected Categories"
       button="Delete"
-      (onClose)="closeMenus()"
+      (onClose)="isDeleteCategoryConfirmationMenuOpen.set(false)"
       >
        <p>This action is permanent and cannot be undone. Do you want to proceed?</p>
 
@@ -181,7 +181,7 @@
       >
         <button
           class="btn-secondary flex-1"
-          (click)="closeMenus()"
+          (click)="isDeleteCategoryConfirmationMenuOpen.set(false)"
         >
           Cancel
         </button>

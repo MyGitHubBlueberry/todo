@@ -112,16 +112,6 @@ export class TaskPageComponent implements OnInit {
     });
   }
 
-  protected openTaskCreateMenu() {
-    this.taskToEdit.set(null);
-    this.isCreateMenuOpen.set(true);
-  }
-
-  protected openTaskEditMenu(task: TaskResponseDto) {
-    this.isCreateMenuOpen.set(false);
-    this.taskToEdit.set(task);
-  }
-
   protected closeMenus() {
     this.taskToEdit.set(null);
     this.taskToDelete.set(null);
@@ -170,11 +160,6 @@ export class TaskPageComponent implements OnInit {
         this.tasks.set(previousTasks);
       }
     });
-  }
-
-  protected openTaskDeletionConfirmation(task: TaskResponseDto) {
-    this.closeMenus();
-    this.taskToDelete.set(task);
   }
 
   protected deleteTask(id: number) {

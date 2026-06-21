@@ -2,12 +2,8 @@
 ## Db design
 ![db schema](./public/db.png)
 ## Todo plan
- - [x] add ability to add categories
- - [x] fetch categories
- - [x] add category deletion
-   - add route for deletion of multiple categories
- - [x] add sorting and reverse sorting options
-   - alphabetically
-   - by creation date 
-   - by update date
- - [ ] start styling
+- [ ] make sure site is fully on the screen
+- [x] close only corresponding windows
+- [ ] adapt for mobile
+- [ ] fix show more/less
+- [ ] show errors from the server

@@ -12,7 +12,7 @@
       </span>
     </label>
 
-    @if (task().categories?.length) {
+    @if (task().categories.length) {
       <div class="hidden md:flex flex-1 min-w-0 gap-2 overflow-x-auto custom-scrollbar pb-1">
         @for (category of task().categories; track category.id) {
           <span class="text-xs px-2 py-0.5 rounded-full border border-brand-border bg-brand-dark text-brand-muted whitespace-nowrap shrink-0">
@@ -52,7 +52,7 @@
     </div>
   </div>
 
-  @if (task().categories?.length) {
+  @if (task().categories.length) {
     <div class="flex md:hidden gap-2 overflow-x-auto custom-scrollbar pb-1 w-full">
       @for (category of task().categories; track category.id) {
         <span class="text-xs px-2 py-0.5 rounded-full border border-brand-border bg-brand-dark text-brand-muted whitespace-nowrap shrink-0">
@@ -64,7 +64,7 @@
 
   @if (task().body && task().body?.trim() !== '') {
     <div class="relative mt-1">
-      <p class="text-sm text-brand-muted transition-all break-words"
+      <p class="text-sm text-brand-muted transition-all wrap-break-word"
          [class.line-clamp-3]="!isExpanded()">
         {{ task().body }}
       </p>
