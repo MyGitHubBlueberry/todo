@@ -3,9 +3,9 @@
 ![db schema](./public/db.png)
 ## Todo plan
 - [x] fix update task categories on delete category
-- [ ] make sure site is fully on the screen
 - [x] close only corresponding windows
+- [ ] show errors from the server
+- [ ] make sure site is fully on the screen
 - [ ] adapt for mobile
 - [ ] fix show more/less
-- [ ] show errors from the server
 - [ ] cleanup git repo

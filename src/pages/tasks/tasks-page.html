@@ -110,4 +110,11 @@
       (onDeleteConfirmed)="deleteCategories($event)"
     />
   }
+
+  @if (toastService.currentToast(); as toast) {
+    <app-toast
+      [message]="toast.message"
+      [seconds]="toast.durationSeconds"
+    />
+  }
 </main>

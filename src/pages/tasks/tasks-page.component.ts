@@ -14,6 +14,8 @@ import { TaskCategoriesComponent } from "@features/task-categories/task-categori
 import { TaskFilterBarComponent } from "@features/task-filters/task-filter-bar.component";
 import { TaskFormComponent } from "@features/task-form/task-form.component";
 import { TaskPaginationComponent } from "@features/task-pagination/task-pagination.component";
+import { ToastComponent } from "@shared/ui/toast/toast.component";
+import { ToastService } from "@shared/ui/toast/toast.service";
 import { ModalLayoutComponent } from "@shared/ui/window-layout/modal-layout.component";
 import { filter } from "rxjs";
 
@@ -31,14 +33,16 @@ import { filter } from "rxjs";
     DeleteTaskCategoriesComponent,
     DeleteTaskConfirmationComponent,
     CreateTaskCategoryComponent,
+    ToastComponent
   ],
 })
 export class TaskPageComponent implements OnInit {
   private readonly taskApi = inject(TaskApiService);
   private readonly categoryApi = inject(CategoryApiService);
-  private readonly temp_sessionApi = inject(SessionService);
-  private readonly temp_router = inject(Router);
+  private readonly sessionApi = inject(SessionService);
+  private readonly router = inject(Router);
 
+  protected readonly toastService = inject(ToastService);
   protected readonly tasks = signal<TaskResponseDto[]>([]);
   protected readonly categories = signal<CategoryResponseDto[]>([]);
   protected readonly taskToEdit = signal<TaskResponseDto | null>(null);
@@ -133,8 +137,8 @@ export class TaskPageComponent implements OnInit {
         this.closeMenus();
       },
       error: (err) => {
-        console.error('Failed to create task', err);
-        // todo: show error popup
+        const serverMessage = err.error?.message || 'Failed to create task due to a server error.';
+        this.toastService.showError(serverMessage, 5);
       }
     });
   }
@@ -161,7 +165,8 @@ export class TaskPageComponent implements OnInit {
         this.tasks.update(tasks => tasks.map(t => t.id === id ? updatedTaskFromServer : t));
       },
       error: (err) => {
-        console.error('Failed to update task', err);
+        const serverMessage = err.error?.message || 'Failed to update task due to a server error.';
+        this.toastService.showError(serverMessage, 5);
         this.tasks.set(previousTasks);
       }
     });
@@ -207,7 +212,8 @@ export class TaskPageComponent implements OnInit {
         this.categories.update(list => [...list, newCategory]);
       },
       error: (err) => {
-        console.error("Failed to create category", err);
+        const serverMessage = err.error?.message || 'Failed to create category due to a server error.';
+        this.toastService.showError(serverMessage, 5);
       }
     });
   }
@@ -237,7 +243,8 @@ export class TaskPageComponent implements OnInit {
 
     this.categoryApi.delete(ids).subscribe({
       error: (err) => {
-        console.error("Failed to delete category", err);
+        const serverMessage = err.error?.message || 'Failed to delete categories due to a server error.';
+        this.toastService.showError(serverMessage, 5);
         this.categories.set(previousCategories);
         this.tasks.set(previousTasks);
       }
@@ -262,13 +269,12 @@ export class TaskPageComponent implements OnInit {
       },
       error: () => {
         this.isLoading.set(false);
-        //todo: show some error?
       }
     });
   }
 
   protected logout() {
-    this.temp_sessionApi.logout();
-    this.temp_router.navigate(['/auth']);
+    this.sessionApi.logout();
+    this.router.navigate(['/auth']);
   }
 }

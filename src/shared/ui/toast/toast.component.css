@@ -1,0 +1,10 @@
+@keyframes shrink {
+  0% { width: 100%; }
+  100% { width: 0%; }
+}
+
+.animate-shrink-bar {
+  animation-name: shrink;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
