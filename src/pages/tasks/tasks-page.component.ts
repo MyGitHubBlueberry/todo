@@ -214,10 +214,32 @@ export class TaskPageComponent implements OnInit {
 
   protected deleteCategories(ids: number[]) {
     this.closeMenus();
+
+    const previousTasks = this.tasks();
+    const previousCategories = this.categories();
+
     this.categories.update(list => list.filter(c => !ids.includes(c.id)));
+
+    this.tasks.update(currentTasks =>
+      currentTasks.map(task => {
+        const hasDeletedCategory = task.categories?.some(c => ids.includes(c.id));
+
+        if (hasDeletedCategory) {
+          return {
+            ...task,
+            categories: task.categories.filter(c => !ids.includes(c.id))
+          };
+        }
+
+        return task;
+      })
+    );
+
     this.categoryApi.delete(ids).subscribe({
       error: (err) => {
         console.error("Failed to delete category", err);
+        this.categories.set(previousCategories);
+        this.tasks.set(previousTasks);
       }
     });
   }
