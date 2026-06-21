@@ -4,7 +4,6 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-auth-form-layout',
   templateUrl: './auth-form-layout.html',
-  styleUrl: './auth-form-layout.css',
   imports: [ReactiveFormsModule],
 })
 export class AuthFormLayoutComponent {

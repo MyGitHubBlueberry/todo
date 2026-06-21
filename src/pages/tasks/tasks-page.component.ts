@@ -19,7 +19,6 @@ import { ToastService } from "@shared/ui/toast/toast.service";
 @Component({
   selector: 'app-tasks-page',
   templateUrl: './tasks-page.html',
-  styleUrl: './tasks-page.css',
   imports: [
     SlicePipe,
     TaskFilterBarComponent,

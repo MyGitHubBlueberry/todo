@@ -5,7 +5,6 @@ import { RegisterByUsernameComponent } from "@features/register-by-username/regi
 @Component({
   selector: 'app-auth-page',
   templateUrl: './auth-page.html',
-  styleUrl: './auth-page.css',
   imports: [LoginByUsernameComponent, RegisterByUsernameComponent],
 })
 export class AuthPageComponent {
