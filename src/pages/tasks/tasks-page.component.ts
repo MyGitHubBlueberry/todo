@@ -127,12 +127,14 @@ export class TaskPageComponent implements OnInit {
   }
 
   protected createTask(dto: TaskCreateDto) {
+    this.totalCount.update(count => ++count);
     this.taskApi.create(dto).subscribe({
       next: (newTask) => {
         this.tasks.update(currentTasks => [newTask, ...currentTasks]);
         this.closeMenus();
       },
       error: (err) => {
+        this.totalCount.update(count => count--);
         const serverMessage = err.error?.message || 'Failed to create task due to a server error.';
         this.toastService.showError(serverMessage, 5);
       }
@@ -171,6 +173,7 @@ export class TaskPageComponent implements OnInit {
   protected deleteTask(id: number) {
     const previousTasks = this.tasks();
     this.tasks.set(previousTasks.filter(t => t.id !== id));
+    this.totalCount.update(count => --count);
 
     this.closeMenus();
 

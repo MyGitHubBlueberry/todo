@@ -11,7 +11,7 @@ import { ModalLayoutComponent } from "@shared/ui/window-layout/modal-layout.comp
     >
       <label>
         Name
-        <input type="text" #categoryName (input)="0" class="form-input mt-1" placeholder="e.g. Work, Personal" autofocus />
+        <input type="text" #categoryName (input)="0" class="form-input mt-1 w-full" placeholder="e.g. Work, Personal" autofocus />
       </label>
 
       <button

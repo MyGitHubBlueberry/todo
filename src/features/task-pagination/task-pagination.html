@@ -17,10 +17,10 @@
   </button>
 
   <span class="flex items-center justify-center w-7 h-7 font-semibold bg-brand-primary rounded-full text-white">
-    {{ currentPage() + 1 }}
+    {{ currentPageConverted() }}
   </span>
 
-  <button [disabled]="tasksCount() < pageSize() || isLoading()" (click)="onNext.emit()">
+  <button [disabled]="isLastPage() || isLoading()" (click)="onNext.emit()">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24" height="24"
